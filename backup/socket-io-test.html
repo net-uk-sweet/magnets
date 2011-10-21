@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.io Test</title>
+       
+    <script src="/json.js"></script> <!-- for ie -->
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+   
+    <script>
+
+	  var socket = io.connect('http://localhost/');
+	  socket.on('connect', function () {
+	    socket.send('message');
+	    status_update('connected');
+	    socket.on('message', function (msg) {
+	      // my msg
+	    });
+	  });
+
+      function status_update(txt){
+        document.getElementById('status').innerHTML = txt;
+      }
+
+/*
+      function connect() {
+        socket.connect();    
+      }
+       
+      function disconnect() {
+        socket.disconnect();
+      }
+       
+      function message(data) {
+        document.getElementById('message').value = data;
+      }
+       
+      function status_update(txt){
+        document.getElementById('status').innerHTML = txt;
+      }
+     
+      function esc(msg){
+        return msg.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function send() {
+        socket.send("Hello Server!");    
+      };
+     
+      var socket = new io.connect("http://localhost");
+     
+       
+      socket.on('message', function(data){ message(data); });
+      socket.on('connect', function(){ status_update("Connected"); send(); });
+      socket.on('disconnect', function(){ status_update("Disconnected"); });
+      socket.on('reconnect', function(){ status_update("Reconnected"); });
+      socket.on('reconnecting', function( nextRetry ) {
+        status_update("Reconnecting in " + nextRetry + " seconds"); });
+      socket.on('reconnect_failed', function(){ message("Reconnect Failed"); });
+*/
+    </script>
+   
+    <h1>Socket.io Test</h1>
+    <div><p id="status">Waiting for input</p></div>
+    <button id="connect" onClick='connect()'/>Connect</button>
+    <button id="disconnect" onClick='disconnect()'>Disconnect</button>
+    <button id="send" onClick='send()'/>Send Message</button>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>WebSockets Client</title>
+	<!--script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script-->
+	<script src="js/jquery-1.6.4.js"></script>
+	<script src="js/modernizr-2.0.6.js"></script>
+	<!-- script src="scripts/h5utils.js"></script -->
+	<script src="js/jquery-ui-1.8.16.custom.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<!--[if IE]>
+		<script src= 
+			"http://html5shiv.googlecode.com/svn/trunk/html5.js">
+		</script>
+	<![endif]-->
+	<link type="text/css" href="css/humanity/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+	<link href="css/magnets.css" rel="stylesheet" media="all" />
+</head>
+<body>
+  <div id="wrapper">
+  		<div id="board">
+			<div id="drop"></div>
+		</div>
+		<div id="toolbar">
+			<div id="menu">
+				<button id="prev">Previous</button>
+				<!-- button id="center" class="ui-button ui-widget ui-state-default ui-button-icon-only" ></button -->
+				<button id="next">Next</button>
+				<span id="chars"></span>
+			</div>
+			<div id="palette">
+				<button id="red" class="red">Red</button>
+				<button id="yellow" class="yellow">Yellow</button>
+				<button id="green" class="green">Green</button>
+				<button id="blue" class="blue">Blue</button>
+			</div>
+			<button id="rotate">Rotate selected</button>
+			<button id="delete">Delete selected</button>
+			<button id="play">Play</button>
+			<button id="stop">Stop</button>
+		</div>
+	  	<div id="debug">
+	    	<h1>WebSockets Output</h1>
+	        <div id="log"></div>
+	        <button id="disconnect">Disconnect</button>
+	        <button id="clear">Clear</button>
+	        <button id="reset">Reset data</button>
+		</div>
+	</div>
+	<script src="js/magnets.js"></script>
+</body>
+</html>​
