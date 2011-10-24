@@ -229,6 +229,13 @@ var drop = {
 	},
 	
 	update: function(data) {
+
+		var item = drop.getItem(data.id);
+		item.c = data.c;
+		item.x = data.x;
+		item.y = data.y;
+		item.r = data.r;
+
 		$("#" + data.id)
 			.css("color", data.c)
 			.css("left", data.x)
@@ -314,13 +321,13 @@ var drop = {
 		var c = 0;
 		var ret;
 
-	    for (var color in colors) {
-	        if (Math.random() < 1/++c) {
-	           ret = colors[color];
-	        }
-	    }
-	    
-	    return ret;
+		for (var color in colors) {
+			if (Math.random() < 1/++c) {
+			   ret = colors[color];
+			}
+		}
+
+		return ret;
 	},
 	
 	getRotation: function() {
@@ -381,6 +388,10 @@ var socket = {
 					},
 					"clear" : function() {
 						drop.clear();	
+					},
+					"count" : function() {
+						//console.log(body);
+						$("#count").html("Connected users: <b>" + body + "</b>");
 					}						
 				};
 				
@@ -406,6 +417,7 @@ var socket = {
 	close: function() {
 		socket.connection.disconnect();	
 	},
+
 	
 	log: function(type, msg) {
 		var $logger = $(socket.config.logger);
