@@ -6,7 +6,8 @@ var http = require('http')
 , server
 , file = "magnets.json"
 , gameData = []
-, clients = {};
+, clients = {}
+, count = 0;
 
 server = http.createServer(function(req, res){
 	// server code
@@ -41,12 +42,15 @@ if (!path.existsSync(file)) {
 
 var io = require('socket.io').listen(server); 
 io.sockets.on('connection', function (socket) {
+	
+	count ++;
 
 	fs.readFile(file, "utf8", function(err, data) {
 		if (err) throw(err);
 		//console.log("Socket: " + socket);			
 		if (data.length) gameData = JSON.parse(data);
 		send(socket, "push", gameData);
+		broadcast(socket, "count", count, true);
 	});
 
 	socket.on('message', function (msg) { 
@@ -118,7 +122,8 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function() {
-		// Handle disconnect	
+		count --;
+		broadcast(socket, "count", count);
 	});
 });
 
@@ -128,9 +133,9 @@ function send(socket, type, body) {
 	socket.emit("message", {type: type, body: body});
 }
 
-// Sends to all but the invokee
-function broadcast(socket, type, body) {
+function broadcast(socket, type, body, all) {
 	socket.broadcast.emit("message", {type: type, body: body});
+	if (all) send(socket, type, body);
 }
 
 // Write game data to file
