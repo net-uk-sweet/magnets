@@ -131,8 +131,9 @@ li { cursor: move;}
 #log p{margin:0;}
 
 #toolbar {
+/*
 	width: 100%;
-	background-color: #ccc;
+	background-color: #ccc; */
 	margin-top: 10px;
 }
 
@@ -152,6 +153,12 @@ button {float: left;}
 	margin: 0;
 	padding: 0;
 	/*border: 1px solid black;*/
+}
+
+#count { 
+	position: absolute;
+	top: 460px;
+	left: 660px;
 }
 
 #menu button {
