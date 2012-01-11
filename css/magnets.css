@@ -1,0 +1,225 @@
+body{ font-family:Arial, Helvetica, sans-serif; }
+
+ul, li{
+	display: inline;
+	font-size: 1.7em;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#palette {
+	display: inline;
+	float: left;
+	margin: 0 10px 0 10px;
+}
+
+.red { 
+	background-color: #FA4646;
+	background-image: none;
+}
+.red.ui-state-hover {
+	background-color: #FF0000;
+}
+.yellow { 
+	background-color: #FFFF4D;
+	background-image: none;
+}
+.yellow.ui-state-hover {
+	background-color: #FFFF00;
+}
+.green { 
+	background-color: #40FF40;
+	background-image: none;
+}
+.green.ui-state-hover {
+	background-color: #00FF00;
+}
+.blue { 
+	background-color: #3D3DFF;
+	background-image: none;
+}
+.blue.ui-state-hover {
+	background-color: #0000FF;
+}
+
+input {margin-top: 20px;}
+
+#clear { display: inline; }
+
+li { cursor: move;}
+
+#frame{
+	position: relative;
+	width: 874px;
+	height: 574px;
+	background-color: #56626B;
+	margin: 50px auto 0 auto;
+	border-top: 8px solid #657078;
+	border-right: 8px solid #657078;
+	border-bottom: 8px solid #4E5961;
+	border-left: 8px solid #4E5961;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	-webkit-box-shadow: 0 0 3px 2px #000;
+	-moz-box-shadow: 0 0 3px 2px #000;
+	box-shadow: 0 0 3px 2px #000;
+	padding: 0;
+}
+
+#board{
+	position: relative;
+	width: 800px;
+	height: 500px;
+	margin: 30px auto 0 auto;
+	padding: 0;
+	border-right: 5px solid #373E44;
+	border-bottom: 5px solid #657078;
+	border-left: 5px solid #657078;
+	border-top: 5px solid #373E44;
+	background: rgb(255,255,255); /* Old browsers */
+	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iNTYlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iOTklIiBzdG9wLWNvbG9yPSIjZTVlNWU1IiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L3JhZGlhbEdyYWRpZW50PgogIDxyZWN0IHg9Ii01MCIgeT0iLTUwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 56%, rgba(229,229,229,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(56%,rgba(255,255,255,1)), color-stop(99%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 56%,rgba(229,229,229,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 56%,rgba(229,229,229,1) 99%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 56%,rgba(229,229,229,1) 99%); /* IE10+ */
+	background: radial-gradient(center, ellipse cover, rgba(255,255,255,1) 56%,rgba(229,229,229,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
+}
+
+#drop{
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 790px;
+	height: 490px;
+	margin: 0;
+	padding: 0;
+	/*border: 1px solid red;*/
+}
+
+#logo {
+	position: absolute;
+	top: 550px;
+	left: 32px;
+	color: #272D31;
+	font-family: "Courier New", monospace;
+	font-size: 1em;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.shadow { text-shadow: 1px 1px 0 #939BA1;	}
+
+.drag {
+	display: inline;
+	position: absolute;
+	width: 32px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 2em;
+	text-shadow: 1px 1px 1px #000;
+	filter: dropshadow(color=#000, offx=1, offy=1); 
+	cursor: move;
+	margin: 0;
+	padding: 0;
+	/*border: 1px solid red;*/
+	/*width: 32px;*/
+	/*height: 32px;*/
+	text-align: center;
+}
+
+.highlight {
+	border: 1px dashed gray;
+}
+
+.ui-draggable-dragging
+{
+	font-size: 2.5em;
+	opacity: 0.75;
+	z-index: 999;
+}
+
+#debug{
+	display: none;
+	border:1px solid black;
+	width:800px;
+	margin: 0;
+	padding: 10px;
+	margin-top: 80px;
+}
+
+#debug h1 { margin: 0; padding: 0; }
+
+#log{
+	height: 150px;
+	margin-bottom: 20px;
+	padding:5px;
+	border:1px solid black;
+	overflow: auto;	
+}
+
+#log p{margin:0;}
+
+#toolbar {
+	width: 100%;
+	background-color: #ccc;
+	margin-top: 10px;
+}
+
+#count {
+	position: absolute;
+	left: 665px;
+}
+
+button.ui-button-icon-only { width: 32px; height: 32px; } /* button elements seem to need a little more width */
+
+button {float: left;}
+
+/* Hack to hide unwanted image icon on clr palette buttons */
+.ui-icon-image {display: none;}
+
+#menu{
+	display: inline;
+	position: relative;
+	float: left;
+	width: 96px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	/*border: 1px solid black;*/
+}
+
+#menu button {
+	display: inline;
+	position: absolute; 
+}
+
+#center { left: 25px; z-index: 1 }
+
+#next { left: 50px; }
+
+#chars {
+	display: inline;
+	position: relative;
+	z-index: 2;
+	top: -5px; /* manual tweaking to centre */
+	left: 24px;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 10px;
+	/*width: 30px;
+	height: 30px;
+	border: 1px dotted black;
+	padding: 2px 5px 2px 5px;*/
+}
+
+.event{color:#999;}
+
+.warning{
+	font-weight:bold;
+	color:#CCC;
+}

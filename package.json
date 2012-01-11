@@ -1,0 +1,17 @@
+{
+  "author": "net.uk.sweet",
+  "name": "sweet.no.de",
+  "description": "Sweet magnets",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~0.4.11"
+  },
+  "dependencies": {
+    "socket.io": "0.8.5",
+    "socket.io-client": "0.8.5"
+  },
+  "devDependencies": {}
+}
