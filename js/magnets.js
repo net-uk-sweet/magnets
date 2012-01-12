@@ -359,11 +359,12 @@ var socket = {
 
 			socket.connection.on('connect', function() {
 				socket.log("event", "Socket status: open");
-				drop.clear();
+				/*drop.clear();*/
 			});
 			
 			socket.connection.on('disconnect', function() {
 				socket.log("event", "Socket status: closed!");
+				drop.clear();
 			});
 			
 			socket.connection.on('message', function(msg) {
