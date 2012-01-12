@@ -40,6 +40,7 @@ if (!path.existsSync(file)) {
 var io = require('socket.io').listen(server); 
 io.sockets.on('connection', function (socket) {
 	
+	console.log("Connected");
 	count ++;
 
 	fs.readFile(file, "utf8", function(err, data) {
@@ -118,6 +119,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function() {
+		console.log("Disconnected");
 		count --;
 		broadcast(socket, "count", count);
 	});
