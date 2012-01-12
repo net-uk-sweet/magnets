@@ -123,6 +123,10 @@ io.sockets.on('connection', function (socket) {
 		count --;
 		broadcast(socket, "count", count);
 	});
+	
+	socket.on('reconnect', function() {
+		console.log("Reconnected");
+	});
 });
 
 // Sends to the invokee

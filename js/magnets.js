@@ -367,6 +367,10 @@ var socket = {
 				drop.clear();
 			});
 			
+			socket.connection.on('reconnect', function() {
+				socket.log("event", "Socket status: reconnected!");
+			});
+			
 			socket.connection.on('message', function(msg) {
 				
 				var type = msg.type;
