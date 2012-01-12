@@ -353,7 +353,7 @@ var socket = {
 		$.extend(socket.config, config);
 				
 		try {
-			socket.connection = io.connect(socket.config.host);
+			socket.connection = io.connect();
 			// Set initial not ready message
 			socket.log("event", "Socket status: closed");
 
