@@ -93,7 +93,6 @@ io.sockets.on('connection', function (socket) {
 					if (item.id === body) {
 						gameData.splice(i, 1);
 						setData(gameData);
-						send(socket, "remove", body);
 						broadcast(socket, "remove", body); 
 						return;
 					}
