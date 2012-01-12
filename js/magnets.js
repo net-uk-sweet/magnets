@@ -455,7 +455,7 @@ menu.init();
 palette.init();
 
 $("#delete").click(function(event) {
-	drop.remove(drop.selected.id);
+	drop.remove(drop.selected);
 	socket.send("remove", drop.selected);
 })
 .button({
