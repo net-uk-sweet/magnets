@@ -344,7 +344,7 @@ var socket = {
 	disabled: false,
 	config: {
 		logger: "#log",
-		host: "http://localhost:24137"
+		host: "http://localhost"
 	},
 	
 	connect: function(config) {	
@@ -353,13 +353,17 @@ var socket = {
 		$.extend(socket.config, config);
 				
 		try {
-			socket.connection = io.connect(socket.config.host);
+			socket.connection = io.connect();
 			// Set initial not ready message
 			socket.log("event", "Socket status: closed");
 
 			socket.connection.on('connect', function() {
 				socket.log("event", "Socket status: open");
 				drop.clear();
+			});
+			
+			socket.connection.on('disconnect', function() {
+				socket.log("event", "Socket status: closed");
 			});
 			
 			socket.connection.on('message', function(msg) {
