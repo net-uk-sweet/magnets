@@ -363,7 +363,7 @@ var socket = {
 			});
 			
 			socket.connection.on('disconnect', function() {
-				socket.log("event", "Socket status: closed");
+				socket.log("event", "Socket status: closed!");
 			});
 			
 			socket.connection.on('message', function(msg) {
