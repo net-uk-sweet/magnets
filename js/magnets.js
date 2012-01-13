@@ -382,6 +382,8 @@ var socket = {
 				"reopen delay": 3000,
 				"max reconnection attempts": 10,
 				"sync disconnect on unload": true,
+				"auto connect": true,
+				"remember transport": true,
 				"transports": [
 					"websocket",
 					"flashsocket",
@@ -449,7 +451,7 @@ var socket = {
 						drop.clear();	
 					},	
 					"count" : function() {
-						//$("#count").html("Connected users: " + body);
+						// $("#count").html("Connected users: " + body);
 					}					
 				};
 				
