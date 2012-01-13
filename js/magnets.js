@@ -374,6 +374,7 @@ var socket = {
 			});
 			*/
 			
+			/*
 			socket.connection = io.connect(null, {
 				"connect timeout": 5000,
 				"try multiple transports": true,
@@ -393,6 +394,9 @@ var socket = {
 					"jsonp-polling"
 				] 
 			});
+			*/
+			
+			socket.connection = io.connect();
 			
 			// Set initial not ready message
 			socket.log("event", "Socket status: closed");
