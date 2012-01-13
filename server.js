@@ -38,6 +38,20 @@ if (!path.existsSync(file)) {
 }
 
 var io = require('socket.io').listen(server); 
+
+io.configure('production', function() {
+	io.enable('browser client etag');
+	io.set('log level', 1);
+	io.set('transports', [
+		'websocket',
+		'flashsocket',
+		'htmlfile',
+		'xhr-polling',
+		'jsonp-polling'
+	]);
+});
+
+
 io.sockets.on('connection', function (socket) {
 	
 	console.log("Connected");

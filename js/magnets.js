@@ -352,29 +352,7 @@ var socket = {
 		$.extend(socket.config, config);
 				
 		try {
-			/*
-			socket.connection = io.connect(null, {   
-			  'secure':                    false,
-			  'connect timeout':           5000,
-			  'try multiple transports':   true,
-			  'reconnect':                 true,
-			  'reconnection delay':        500,
-			  'reopen delay':              3000,
-			  'max reconnection attempts': 10,
-			  'sync disconnect on unload': true,
-			  'auto connect':              false,
-			  'remember transport':        false,
-			  'transports': [
-			      'websocket'
-			    , 'flashsocket'
-			    , 'htmlfile'
-			    , 'xhr-multipart'
-			    , 'xhr-polling'
-			    , 'jsonp-polling']
-			});
-			*/
-			
-			/*
+
 			socket.connection = io.connect(null, {
 				"connect timeout": 5000,
 				"try multiple transports": true,
@@ -394,9 +372,8 @@ var socket = {
 					"jsonp-polling"
 				] 
 			});
-			*/
 			
-			socket.connection = io.connect();
+			//socket.connection = io.connect();
 			
 			// Set initial not ready message
 			socket.log("event", "Socket status: closed");
