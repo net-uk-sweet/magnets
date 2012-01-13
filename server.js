@@ -7,7 +7,7 @@ var http = require('http')
 , file = "magnets.json"
 , gameData = []
 , count = 0;
-
+//
 server = http.createServer(function(request, result) {
 	// server code
 	var path = url.parse(request.url).pathname;
