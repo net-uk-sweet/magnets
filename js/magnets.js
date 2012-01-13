@@ -343,8 +343,7 @@ var socket = {
 	connection: "",	
 	disabled: false,
 	config: {
-		logger: "#log",
-		host: "http://localhost"
+		logger: "#log"
 	},
 	
 	connect: function(config) {	
@@ -353,7 +352,46 @@ var socket = {
 		$.extend(socket.config, config);
 				
 		try {
-			socket.connection = io.connect();
+			/*
+			socket.connection = io.connect(null, {   
+			  'secure':                    false,
+			  'connect timeout':           5000,
+			  'try multiple transports':   true,
+			  'reconnect':                 true,
+			  'reconnection delay':        500,
+			  'reopen delay':              3000,
+			  'max reconnection attempts': 10,
+			  'sync disconnect on unload': true,
+			  'auto connect':              false,
+			  'remember transport':        false,
+			  'transports': [
+			      'websocket'
+			    , 'flashsocket'
+			    , 'htmlfile'
+			    , 'xhr-multipart'
+			    , 'xhr-polling'
+			    , 'jsonp-polling']
+			});
+			*/
+			
+			socket.connection = io.connect(null, {
+				"connect timeout": 5000,
+				"try multiple transports": true,
+				"reconnect": true,
+				"reconnection delay": 500,
+				"reopen delay": 3000,
+				"max reconnection attempts": 10,
+				"sync disconnect on unload": true,
+				"transports": [
+					"websocket",
+					"flashsocket",
+					"htmlfile",
+					"xhr-multipart",
+					"xhr-polling",
+					"jsonp-polling"
+				] 
+			});
+			
 			// Set initial not ready message
 			socket.log("event", "Socket status: closed");
 
@@ -367,8 +405,16 @@ var socket = {
 				drop.clear();
 			});
 			
+			socket.connection.on('reconnecting', function(delay, attempts) {
+				socket.log("event", "Socket status: reconnection attempt " + attempts);
+			});
+
 			socket.connection.on('reconnect', function() {
-				socket.log("event", "Socket status: reconnected!");
+				socket.log("event", "Socket status: reconnected");
+			});
+			
+			socket.connection.on('reconnect_failed', function() {
+				socket.log("event", "Socket status: reconnect failed");	
 			});
 			
 			socket.connection.on('message', function(msg) {
@@ -403,7 +449,7 @@ var socket = {
 						drop.clear();	
 					},	
 					"count" : function() {
-						$("#count").html("Connected users: " + body);
+						//$("#count").html("Connected users: " + body);
 					}					
 				};
 				

@@ -165,8 +165,8 @@ li { cursor: move;}
 
 #toolbar {
 	width: 100%;
-	border: 1px solid red;
-	background-color: #ccc;
+	/*border: 1px solid red;
+	background: #ccc;*/
 	margin: 10px auto 0 auto;
 }
 
