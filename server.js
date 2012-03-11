@@ -4,15 +4,15 @@ var http = require('http')
 , path = require('path')
 , mime = require('mime')
 , server
-, file = "magnets.json"
-, gameData = []
-, count = 0;
+, file = 'items.json' // handy if we need to restore from a crash
+, items = [];
+
 //
 server = http.createServer(function(request, result) {
 	// server code
 	var path = url.parse(request.url).pathname;
-	if (path == "/") path = "/index.htm";
-	// console.log("Path: " + path);
+	if (path == '/') path = '/index.htm';
+	// console.log('Path: ' + path);
 	var type = mime.lookup(path);
 
 	fs.readFile(__dirname + path, function(error, data) {
@@ -32,7 +32,7 @@ server.listen(process.env.PORT || 8080);
 
 // Create a file to contain the game data if it doesn't exist
 if (!path.existsSync(file)) {
-	fs.open(file, "w+", "0666", function(err, fd) {
+	fs.open(file, 'w+', '0666', function(err, fd) {
 		if (err) throw(err);
 	});
 }
@@ -54,15 +54,34 @@ io.configure('production', function() {
 
 io.sockets.on('connection', function (socket) {
 	
-	console.log("Connected");
-	count ++;
-
-	fs.readFile(file, "utf8", function(err, data) {
-		if (err) throw(err);
-		//console.log("Socket: " + socket);			
-		if (data.length) gameData = JSON.parse(data);
-		send(socket, "push", gameData);
-		broadcast(socket, "count", count, true);
+	//console.log("Connected");
+	
+	fs.readFile(file, 'utf8', function(err, data) {
+		
+		if (err) throw(err);		
+		
+		var clients = io.sockets.clients();
+		var client;
+		var selected = [];
+		for (var i = 0; i < clients.length; i ++) {
+			client = clients[i];
+			client.get('selected', function(err, id) {
+				if (id != null)
+					selected.push(id);
+			});	
+		}
+		
+		//console.log('Socket: ' + socket);			
+		if (data.length) 
+			items = JSON.parse(data);
+		
+		send(socket, 'push', {
+			items: items, 
+			selected: selected, 
+			count: clients.length
+		});
+		
+		broadcast(socket, 'count', clients.length);
 	});
 
 	socket.on('message', function (msg) { 
@@ -76,56 +95,67 @@ io.sockets.on('connection', function (socket) {
 		
 		// Handle incoming messages appropriately.
 		var handler = {
-			"add": function() {
+			'add': function() {
 				body.id = getGUID();
-				gameData.push(body);
-				setData(gameData);
-				send(socket, "guid", body.id);
-				broadcast(socket, "add", body);
+				items.push(body);
+				setData(items);
+				send(socket, 'guid', body.id);
+				broadcast(socket, 'add', body);
 			},
-			"update": function() {
-				var l = gameData.length;
+			'update': function() {
+				var l = items.length;
 				var i = 0;
 				var item;
 				while (i < l) {
-					item = gameData[i];
+					item = items[i];
 					if (item.id === body.id) {
-						gameData.splice(i, 1);
-						gameData.push(body);
-						setData(gameData);
-						broadcast(socket, "update", body);
+						items.splice(i, 1);
+						items.push(body);
+						setData(items);
+						broadcast(socket, 'update', body);
 						return;
 					}
 					i ++;
 				}
 			},
-			"remove": function() {
-				var l = gameData.length;
+			'remove': function() {
+				var l = items.length;
 				var i = 0;
 				var item; 
 				while (i < l) {
-					item = gameData[i];
+					item = items[i];
 					if (item.id === body) {
-						gameData.splice(i, 1);
-						setData(gameData);
-						broadcast(socket, "remove", body); 
+						items.splice(i, 1);
+						setData(items);
+						broadcast(socket, 'remove', body); 
 						return;
 					}
 					i ++;
 				}
 			},
-			"clear": function() {
-				gameData = [];
-				setData(gameData);
-				send(socket, "clear");
-				broadcast(socket, "clear");
+			'selected': function() {
+				var unselected;
+				socket.get('selected', function(err, id) {
+					unselected = id; // may be null
+					socket.set('selected', body, function(err){
+						broadcast(socket, 'selected', {
+							unselected: unselected,
+							selected: body
+						});
+					}) 
+				});
 			},
-			"history": function() {
-				console.log("History");
+			'clear': function() {
+				items = [];
+				setData(items);
+				broadcast(socket, 'clear', true);
 			},
-			"reset": function() {
+			'history': function() {
+				console.log('History');
+			},
+			'reset': function() {
 				// Do a push here
-				console.log("Resetting");
+				console.log('Resetting');
 			}			
 		}
 
@@ -134,19 +164,27 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('disconnect', function() {
 		console.log("Disconnected");
-		count --;
-		broadcast(socket, "count", count);
+		socket.get('selected', function(err, id) {
+			console.log("id: " + id);
+			if (id !== null) {
+				broadcast(socket, 'selected', {
+					unselected: id,
+					selected: null
+				});
+			}
+		});
+		broadcast(socket, "count", io.sockets.clients().length - 1);
 	});
 });
 
 // Sends to the invokee
 function send(socket, type, body) {
-	//console.log("Sending to " + socket);
-	socket.emit("message", {type: type, body: body});
+	//console.log('Sending to ' + socket);
+	socket.emit('message', {type: type, body: body});
 }
 
 function broadcast(socket, type, body, all) {
-	socket.broadcast.emit("message", {type: type, body: body});
+	socket.broadcast.emit('message', {type: type, body: body});
 	if (all) send(socket, type, body);
 }
 
