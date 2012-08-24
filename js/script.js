@@ -2,17 +2,66 @@
 	Ian Watson
 	
 	TODO: HTML5 sound on drop
-	TODO: magnet pre-loader
+	TODO: Alert when users log-in
+	TODO: Refactor using Backbone
 */
 
 (function( magnets, $, undefined ) {
 	
-    //Private Property
-    //var privateProperty = 30;
+	var toolbar = {
+		config: {
+			
+		},
+		
+		init: function(config) {
+			$.extend(palette.config, config);		
+		
+			var $toolbar = $('#toolbar');
+			var $frame = $('#frame');
+			
+			// Check if mouse is already over frame	
+			if ($frame.data('hover'))
+				$toolbar.fadeIn();
+				
+			// Fade toolbar in and out if mouse is over whiteboard
+			$frame.unbind('mouseenter mouseleave')
+				.hover(
+					function(event) { $toolbar.stop().fadeIn(); }, 
+					function(event) { $toolbar.stop().fadeOut(); }
+				);
 
-    //Public Property
-   // magnets.publicProperty = '0.1.0';
+			// set up buttons with auto class to autofire
+			$('button.auto').autofire({});
+			
+			$('#delete').button({
+				icons: { primary: 'none' },
+				text: false
+			})
+			.click(function(event) {
+				drop.remove(drop.selected);
+				socket.send('remove', drop.selected);
+			});
 
+			$('#rotate').button({
+				icons: { primary: 'none' },
+				text: false
+			})
+			.click(function (event) {
+				drop.rotate(drop.config.rotation);
+			});	
+			
+			toolbar.setEnabled(false);
+		}, 
+		
+		setEnabled: function(enable) {
+			
+			enableButton('rotate', enable);
+			enableButton('delete', enable);
+			
+			palette.setEnabled(enable);
+		}
+	}
+	
 	var palette = {
 		
 		config: {
@@ -29,23 +78,36 @@
 			var colors = palette.config.colors;
 			for (var color in colors) {
 				$('#' + color).click(function(event) {
-					drop.setColor(colors[this.id]);
+					var id = this.id
+					drop.setColor(colors[id]);
+					palette.setEnabled(true);
+					enableButton(id, false);
 				})
 				.button({
-					icons: {
-						primary: 'ui-icon-image'
-					},
+					icons: { primary: 'none' },
 					text: false
 				});
 			}
 		},
 		
-		setEnabled: function(value) {
+		enableSwatch: function(hex, enable) {
+			
 			var colors = palette.config.colors;
+
 			for (var color in colors) {
-				//$('#' + color).fadeOut();
+				if (colors[color] === hex) {
+					enableButton(color, enable)
+				}
 			}
-		}
+		},
+		
+		setEnabled: function(enable) {
+			
+			var colors = palette.config.colors;
+
+			for (var color in colors)
+				enableButton(color, enable);
+		}, 
 	};
 	
 	var menu = {
@@ -66,7 +128,7 @@
 			var config = menu.config;
 			
 			$(config.prev).button({
-				icons: {primary: 'ui-icon-triangle-1-w'}, 
+				icons: { primary: 'none' }, 
 				text: false
 			})
 			.bind('click.autofire', function (event) {
@@ -74,7 +136,7 @@
 			});
 			
 			$(config.next).button({
-				icons: { primary: 'ui-icon-triangle-1-e'},
+				icons: { primary: 'none' },
 				text: false
 			})
 			.bind('click.autofire', function (event) {
@@ -95,7 +157,7 @@
 		},
 		
 		update: function() {
-			
+
 			var chars = menu.config.chars;
 			
 			if (menu.index > chars.length - 1)
@@ -103,33 +165,32 @@
 				
 			if (menu.index < 0)
 				menu.index = chars.length - 1;
-			
-			$('#chars').html('<span id="' 
-				+ drop.added 
-				+ '" class="drag">' 
-				+ chars[menu.index] 
-				+ '<\/span>');
-			
-			$('#chars span').css('color', '#cccccc').draggable({
-				tolerance: 'touch'
-			})
-			.one('mousedown', function() {
-				var $this = $(this);
-				if ($this.attr('id') === drop.added) {
-					$(this).colorCycle({
-						'shuffle': true, 
-						'wait': false,
-						'delay': 2
-					});	
-				}	
-			})
-			.click(function() {
-				var $this = $(this);
-				if ($this.attr('id') === drop.added) {
-					$this.css('color', '#cccccc')
-						.colorCycle('destroy');	
-				}
-			});
+
+			$('#character-selector').html(
+				$('<span>' + chars[menu.index] + '<\/span>')
+					.addClass('drag unselected')
+					.attr('id', drop.added)
+			);
+				
+			$('#character-selector span').css('color', '#cccccc')
+				.draggable({ tolerance: 'touch' })
+				.one('mousedown', function() {
+					var $this = $(this);
+					if ($this.attr('id') === drop.added) {
+						$(this).colorCycle({
+							'shuffle': true, 
+							'wait': false,
+							'delay': 2
+						});	
+					}	
+				})
+				.click(function() {
+					var $this = $(this);
+					if ($this.attr('id') === drop.added) {
+						$this.css('color', '#cccccc')
+							.colorCycle('destroy');	
+					}
+				});
 		}
 	};
 	
@@ -182,6 +243,8 @@
 					$drag = ui.draggable;
 					$id = $drag.attr('id');
 					
+					$('#board').css('overflow', 'hidden');
+					
 					if ($id === drop.added) {
 						
 						var offset = $this.offset();
@@ -191,12 +254,12 @@
 						y = event.originalEvent.pageY - offset.top - ($drag.height() / 2); 
 						
 						$this.append($drag);
-						$drag.colorCycle('destroy');
+						$drag.colorCycle('destroy').removeClass('unselected');
 											
 						item = {
 							id: $id,
 							v: $drag.contents().clone()[0].data,
-							c: $drag.css('color'),
+							c: $drag.data('colorCycle').color,
 							x: x,
 							y: y,
 							r: drop.getRotation()
@@ -211,9 +274,10 @@
 						socket.send('add', item);
 					} else {
 						// It's been moved within the target
+						var position = $drag.position();
 						item = drop.getItem($id);
-						item.x = $drag.css('left');
-						item.y = $drag.css('top');
+						item.x = position.left;
+						item.y = position.top;
 						drop.setSelected($id);
 						socket.send('update', item);
 					}
@@ -240,11 +304,12 @@
 			if (!drop.getItem(item.id)) {
 				drop.items.push(item);
 			}
-				
-			$target.append('<span class="drag" id="' 
-				+ item.id + '">' 
-				+ item.v 
-				+ '<\/span>');
+
+			$target.append(
+				$('<span>' + item.v + '<\/span>')
+					.addClass('drag')
+					.attr('id', item.id)
+			);	
 				
 			drop.setProps($('#' + item.id), item);
 		},
@@ -277,7 +342,7 @@
 		},
 		
 		setColor: function(color) {
-			$('#' + drop.selected).css('color', color);
+			$('#' + drop.selected).css('color', color);				
 			var item = drop.getItem(drop.selected);
 			item.c = color;
 			socket.send('update', item);
@@ -286,7 +351,10 @@
 		setSelected: function(id) {
 			$('#' + drop.selected).removeClass('highlight');
 			drop.selected = id;
+			var item = drop.getItem(drop.selected);
 			$('#' + id).addClass('highlight');
+			toolbar.setEnabled(true);
+			palette.enableSwatch(item.c, false);
 			socket.send('selected', id);
 		},
 		
@@ -323,6 +391,8 @@
 			var item;
 	
 			$('#' + id).remove();
+			toolbar.setEnabled(false);
+			
 			while (i < l) {
 				item = items[i];
 				if (item.id === id) {
@@ -343,6 +413,9 @@
 				.css('-webkit-transform', 'rotate(' + item.r + 'deg)')
 				.css('-moz-transform', 'rotate(' + item.r + 'deg)')
 				.click(drop.getClick())
+				.mouseover(function() {
+					$('#board').css('overflow', 'visible');
+				})
 				.draggable({
 					containment: drop.config.target,
 					distance: drop.config.lag,
@@ -396,7 +469,7 @@
 		disabled: false,
 		config: {
 			logger: '#log',
-			count: '#count'
+			users: '#users'
 		},
 		
 		connect: function(config) {	
@@ -531,23 +604,18 @@
 		},
 		
 		setCount: function(count) {
-			$(socket.config.count).html('Connected users:' + ' ' + count.toString());			
+			$(socket.config.users).html("(" + count.toString() + ") ");			
 		}
 	};
 	
-    //Public Method
-    /*
-    magnets.publicMethod = function() {
-		//console.log('Doing something')
-    };
-	
-    // Private Method
-    function privateMethod() {
-		// helper methods
-    };
-	*/
-	
-	magnets.init = function() {
+	magnets.init = function() {	
+
+		// Keep a record of whether mouse is over so we 
+		// can show the toolbar if necessary when app has loaded
+		$('#frame').hover(
+			function(event) { $(this).data('hover', true); }, 
+			function(event) { $(this).data('hover', false); }
+		);
 		
 		$('#preloader').preloader({
 			style: 'drag',
@@ -563,75 +631,35 @@
 		socket.connect();	
 	};
 	
+	function enableButton(id, enable) {
+		var method = enable ? 'enable' : 'disable';
+		$('#' + id).button(method);
+	};
+	
 	function render() {
 		
 		// Initialise UI
 		menu.init();
 		palette.init();
-		
-		// TODO: UI setup code should move to appropriate UI modules 
-		
-		$('#delete').click(function(event) {
-			drop.remove(drop.selected);
-			socket.send('remove', drop.selected);
-		})
-		.button({
-			icons: {
-				primary: 'ui-icon-trash'	
-			},
-			text: false
-		});
-	
-		$('button.auto').autofire({});
-		
-		$('#rotate').button({
-			icons: {
-				primary: 'ui-icon-arrowrefresh-1-w'	
-			},
-			text: false
-		})
-		.bind('click', function (event) {
-			drop.rotate(drop.config.rotation);
-		});
-		
-		$('#drop').show('slow');
-		$('#toolbar').show('slow');	
+		toolbar.init();
+				
+		$('#drop').fadeIn();	
 	};
 	
 	
 		
 	// Admin controls
 	
-		$('#disconnect').click(function(event) {
-			socket.close();
-		});
-		
-		$('#reset').click(function(event) {
-			socket.send('clear', null);
-		});
-		$('#clear').click(function(event) {
-			$('#log').empty();
-		});
-		
-		
-		/*
-		$('#play').click(function(event) {
-			drop.clear();
-			socket.send('history', null);
-		})
-		.button();
-		
-		$('#stop').click(function(event) {
-			
-			clearTimeout(play.timer);
-			drop.clear();
-			play.disabled = false;
-			var timer = setTimeout(function() {
-				socket.send('reset', null);
-			}, 1000); 
-		})
-		.button();
-		*/
+	$('#disconnect').click(function(event) {
+		socket.close();
+	});
+	
+	$('#reset').click(function(event) {
+		socket.send('clear', null);
+	});
+	$('#clear').click(function(event) {
+		$('#log').empty();
+	});
 
 }( window.magnets = window.magnets || {}, jQuery ));
 

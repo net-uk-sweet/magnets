@@ -21,8 +21,10 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
   <link rel="author" href="humans.txt" />
   
-  <link rel="stylesheet" href="css/humanity/jquery-ui-1.8.16.custom.css" />	
+  <!-- link rel="stylesheet" href="css/humanity/jquery-ui-1.8.16.custom.css" / -->	
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/fontello.css"><!--[if IE 7]>
+  <link rel="stylesheet" href="css/fontello-ie7.css"><![endif]-->
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
@@ -35,48 +37,42 @@
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  <header>
-
-  </header>
+  
   <div role="main" id="wrapper">
-  		<div id="frame">
-	  		<div id="board" class="gradient">
-	  			<div id="preloader"></div>
-				<div id="drop"></div>
-			</div>
-			<a href="http://ian.sweet.uk.net" id="logo" class="shadow">net.uk.sweet</a>
+	<div id="frame">
+  		<div id="board" class="gradient">
+  			<div id="preloader"></div>
+			<div id="drop"></div>
 		</div>
+		<a href="http://ian.sweet.uk.net" id="logo" class="shadow">net.uk.sweet</a>
 		<div id="toolbar">
-			<div id="menu">
-				<button id="prev" class="auto">Previous</button>
-				<span id="chars"></span>
-				<!-- button id="center" class="ui-button ui-widget ui-state-default ui-button-icon-only" ></button -->
-				<button id="next" class="auto">Next</button>
+			<div id="menu" class="ui-panel">
+				<button id="prev" class="ui-button icon-left-dir shadow auto">Previous letter</button>
+				<span id="character-selector" class="ui-button"></span>
+				<button id="next" class="ui-button icon-right-dir shadow auto">Next letter</button>
 			</div>
-			<div id="palette">
-				<button id="red" class="red">Red</button>
-				<button id="yellow" class="yellow">Yellow</button>
-				<button id="green" class="green">Green</button>
-				<button id="blue" class="blue">Blue</button>
+			<div id="palette" class="ui-panel">
+				<button id="red" class="ui-button palette icon-record red shadow">Red</button>
+				<button id="yellow" class="ui-button palette icon-record yellow shadow">Yellow</button>
+				<button id="green" class="ui-button palette icon-record green shadow">Green</button>
+				<button id="blue" class="ui-button palette icon-record blue shadow">Blue</button>
 			</div>
-			<button id="rotate" class="auto">Rotate selected</button>
-			<button id="delete">Delete selected</button>
-			<!-- button id="play">Play</button>
-			<button id="stop">Stop</button -->
-			<p id="count" />
+			<div id="utilities" class="ui-panel">
+				<button id="rotate" class="ui-button icon-cw shadow auto">Rotate</button>
+				<button id="delete" class="ui-button icon-trash shadow">Delete</button>
+				<!-- button class="ui-button icon-users shadow">Users</button -->
+			</div>
 		</div>
-	  	<div id="debug">
-	    	<h1>WebSockets Output</h1>
-	        <div id="log"></div>
-	        <button id="disconnect">Disconnect</button>
-	        <button id="clear">Clear</button>
-	        <button id="reset">Reset data</button>
-		</div>
+		<span id="users" class="icon-users shadow"></span>
 	</div>
-  <footer>
-
-  </footer>
-
+  	<div id="debug">
+    	<h1>WebSockets Output</h1>
+        <div id="log"></div>
+        <button id="disconnect">Disconnect</button>
+        <button id="clear">Clear</button>
+        <button id="reset">Reset data</button>
+	</div>
+  </div>
 
   <!-- JavaScript at the bottom for fast page loading -->
 

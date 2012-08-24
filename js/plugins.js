@@ -148,6 +148,7 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 					data.count = 0;
 				}
 				
+				data.color = colors[data.count];
 				data.animating = false;	
 				data.timeout = setTimeout(animate, delay * 1000, $target);
 			}
@@ -197,6 +198,9 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 					: data.colors[data.count - 1];
 					
 				$this.stop().css('color', color);
+				
+				// preserve hex value as $(element).css() won't necessarily return it
+				data.color = color;  
 				
 				if (data && data.timeout !== undefined) 
 					clearTimeout(data.timeout);
