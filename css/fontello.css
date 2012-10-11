@@ -26,14 +26,14 @@
 /* fix buttons height */
   line-height: 1em;
 /* you can be more comfortable with increased icons size */
-  font-size: 70%;
+  font-size: 12px;
 }
 
-.icon-right-dir:before { content: '\25b8'; font-size: 80%; margin-top: 7px; } /* '▸' */
-.icon-left-dir:before { content: '\25c2'; font-size: 80%; margin-top: 7px; } /* '◂' */
-.icon-record:before { content: '\26ab'; /*margin: -3px 0 0 1px;*/ } /* '⚫' */
+.icon-right-dir:before { content: '\25b8'; /*font-size: 14px; margin-top: 8px;*/  } /* '▸' */
+.icon-left-dir:before { content: '\25c2'; /*font-size: 14px; margin-top: 8px;*/ } /* '◂' */
+.icon-record:before { content: '\26ab'; } /* '⚫' */
 /*.icon-ccw:before { content: '\27f2'; }*/ /* '⟲' */
-.icon-cw:before { content: '\27f3'; margin-left: 2px; } /* '⟳' */
+.icon-cw:before { content: '\27f3'; /*font-size: 13px; margin-left: 2px; margin-top: 8px; */} /* '⟳' */
 .icon-trash:before { content: '\e729'; } /* '' */
-.icon-users:after { content: '👥'; font-size: 100% } /* '\1f465' */
+.icon-users:after { content: '👥'; font-size: 16px; } /* '\1f465' */
 .icon-none:before { content: ''; } /* '⚫' */

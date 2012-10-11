@@ -352,9 +352,9 @@ li { cursor: move;}
 #log p{margin:0;}
 
 #toolbar {
-	display: none;
-	width: 308px;
-	margin: 5px auto 0 auto;
+	/*display: none;*/
+	margin-top: 5px;
+	text-align: center;
 }
 
 .ui-panel {
@@ -369,15 +369,18 @@ li { cursor: move;}
 
 .ui-button { width: 25px; height: 25px; }
 .ui-icon {
-	width: 21px;
-	height: 21px;
+	width: 25px;
+	height: 25px;
+
 }
 .ui-button-icon-only { width: 25px !important; }
 .ui-button-icon-only .ui-icon {
-	top: 3px !important; 
-	left: 5px !important;
+	/*top: 3px !important; 
+	left: 5px !important;*/
 	/*border: 1px solid;*/
 	text-shadow: 1px 1px 0 #939BA1;
+	margin-left: -15px;
+	margin-top: -15px;
 }
 .ui-corner-all {
 	-webkit-border-radius: 2px;
@@ -437,19 +440,6 @@ li { cursor: move;}
 }
 
 #prev { margin-right: 40px; }
-
-/* sorry, firefox specific absolute fixes */
-@-moz-document url-prefix() {
-    #prev {
-        margin-right: 39px;
-    }
-	.ui-button-icon-only .ui-icon {
-		top: 2px !important; 
-		left: 5px !important;
-	}
-	#toolbar { width: 320px; }
-}
-
 
 #character-selector {
 	/*border: 1px solid black;*/
