@@ -187,7 +187,7 @@
 				.colorCycle({
 					'shuffle': true, 
 					'wait': true,
-					'delay': 2
+					'delay': 4
 				})	
 				.draggable({ tolerance: 'touch' })
 				.click(function() {

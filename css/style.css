@@ -443,13 +443,6 @@ li { cursor: move;}
 
 #prev { margin-right: 40px; }
 
-/* sorry, firefox specific absolute fixes */
-@-moz-document url-prefix() {
-    #prev {
-        margin-right: 39px;
-    }
-}
-
 #character-selector {
 	/*border: 1px solid black;*/
 	position: absolute;
@@ -465,11 +458,11 @@ li { cursor: move;}
 
 #logo {
 	position: absolute;
-	top: 550px;
+	top: 548px;
 	left: 32px;
 	color: #272D31;
 	font-family: "Courier New", monospace;
-	font-size: 1em;
+	font-size: 1.15em;
 	text-decoration: none;
 	font-weight: bold;
 }
