@@ -1,9 +1,8 @@
 /* Author:
 	Ian Watson
 	
-	TODO: HTML5 sound on drop
-	TODO: Alert when users log-in
-	TODO: Refactor using Backbone
+	TODO: sound on drop
+	TODO: prompt when only user
 */
 
 (function( magnets, $, undefined ) {
@@ -18,23 +17,33 @@
 		
 			var $toolbar = $('#toolbar');
 			var $frame = $('#frame');
+			var timer; 
 			
 			// Check if mouse is already over frame	
 			if ($frame.data('hover'))
 				$toolbar.fadeIn();
 				
 			// Fade toolbar in and out if mouse is over whiteboard
-			$frame.unbind('mouseenter mouseleave')
-				.hover(
-					function(event) { $toolbar.stop().fadeIn(); }, 
-					function(event) { $toolbar.stop().fadeOut(); }
-				);
+			$frame.hover(
+				function(event) {
+					$toolbar.data('hover', true); 
+					$toolbar.stop().fadeTo('slow', 1); 
+				}, 
+				function(event) { 
+					$toolbar.data('hover', false);
+					clearTimeout(timer); 
+					timer = setTimeout(function() { 
+						if (!$toolbar.data('hover'))
+							$toolbar.stop().fadeOut('slow', 0);
+					}, 1500)
+				}
+			);
 
 			// set up buttons with auto class to autofire
 			$('button.auto').autofire({});
-			
+
 			$('#delete').button({
-				icons: { primary: 'none' },
+				icons: { primary: 'icon-trash' },
 				text: false
 			})
 			.click(function(event) {
@@ -43,7 +52,7 @@
 			});
 
 			$('#rotate').button({
-				icons: { primary: 'none' },
+				icons: { primary: 'icon-cw' },
 				text: false
 			})
 			.click(function (event) {
@@ -84,7 +93,7 @@
 					enableButton(id, false);
 				})
 				.button({
-					icons: { primary: 'none' },
+					icons: { primary: 'icon-record' },
 					text: false
 				});
 			}
@@ -128,20 +137,22 @@
 			var config = menu.config;
 			
 			$(config.prev).button({
-				icons: { primary: 'none' }, 
+				icons: { primary: 'icon-left-dir' }, 
 				text: false
 			})
+			.button('enable')
 			.bind('click.autofire', function (event) {
 				menu.prev();
 			});
 			
 			$(config.next).button({
-				icons: { primary: 'none' },
+				icons: { primary: 'icon-right-dir' },
 				text: false
 			})
+			.button('enable')
 			.bind('click.autofire', function (event) {
 				menu.next();
-			});
+			});		
 				
 			menu.update();
 		},
@@ -617,6 +628,11 @@
 			function(event) { $(this).data('hover', false); }
 		);
 		
+		// hack to kill focus state which appears to be impossible to override in CSS
+		$("button").mouseup(function() {
+			$(this).removeClass('ui-state-focus ui-state-hover ui-state-active');
+		});
+
 		$('#preloader').preloader({
 			style: 'drag',
 			delay: 1,

@@ -21,7 +21,7 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
   <link rel="author" href="humans.txt" />
   
-  <!-- link rel="stylesheet" href="css/humanity/jquery-ui-1.8.16.custom.css" / -->	
+  <link rel="stylesheet" href="css/humanity/jquery-ui-1.8.16.custom.css" />	
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/fontello.css"><!--[if IE 7]>
   <link rel="stylesheet" href="css/fontello-ie7.css"><![endif]-->
@@ -47,20 +47,20 @@
 		<a href="http://ian.sweet.uk.net" id="logo" class="shadow">net.uk.sweet</a>
 		<div id="toolbar">
 			<div id="menu" class="ui-panel">
-				<button id="prev" class="ui-button icon-left-dir shadow auto">Previous letter</button>
-				<span id="character-selector" class="ui-button"></span>
-				<button id="next" class="ui-button icon-right-dir shadow auto">Next letter</button>
+				<button id="prev" class="auto">Previous letter</button>
+				<span id="character-selector" class="ui-button ui-state-default ui-corner-all"></span>
+				<!-- span id="character-selector"></span -->
+				<button id="next" class="auto">Next letter</button>
 			</div>
 			<div id="palette" class="ui-panel">
-				<button id="red" class="ui-button palette icon-record red shadow">Red</button>
-				<button id="yellow" class="ui-button palette icon-record yellow shadow">Yellow</button>
-				<button id="green" class="ui-button palette icon-record green shadow">Green</button>
-				<button id="blue" class="ui-button palette icon-record blue shadow">Blue</button>
+				<button id="red" class="ui-state-red">Red</button>
+				<button id="yellow" class="ui-state-yellow">Yellow</button>
+				<button id="green" class="ui-state-green">Green</button>
+				<button id="blue" class="ui-state-blue">Blue</button>
 			</div>
 			<div id="utilities" class="ui-panel">
-				<button id="rotate" class="ui-button icon-cw shadow auto">Rotate</button>
-				<button id="delete" class="ui-button icon-trash shadow">Delete</button>
-				<!-- button class="ui-button icon-users shadow">Users</button -->
+				<button id="rotate" class="auto">Rotate</button>
+				<button id="delete">Delete</button>
 			</div>
 		</div>
 		<span id="users" class="icon-users shadow"></span>
@@ -75,7 +75,6 @@
   </div>
 
   <!-- JavaScript at the bottom for fast page loading -->
-
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
@@ -95,4 +94,4 @@
     s.parentNode.insertBefore(g,s)}(document,'script'));
   </script -->
 </body>
-</html>​
+</html>
