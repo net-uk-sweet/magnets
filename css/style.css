@@ -390,7 +390,7 @@ li { cursor: move;}
 	border-radius: 2px;		
 }
 .ui-state-default {
-	box-shadow: 0 0 1px 1px #444;	
+	box-shadow: 0 0 1px 1px #000;	
 	color: #272D31;
 	background-color: #56626B;
 	background-image: none !important;	
@@ -441,14 +441,14 @@ li { cursor: move;}
   padding: .2em 0 0 .2em !important;
 }
 
-#prev { margin-right: 42px; }
+#prev { margin-right: 40px; }
 
 #character-selector {
 	/*border: 1px solid black;*/
 	position: absolute;
 	display: inline-block;
 	top: 0;
-	left: 31px;
+	left: 30px;
 	width: 30px;
 	height: 21px;
 	text-align: center;
@@ -469,11 +469,12 @@ li { cursor: move;}
 
 #users {
 	position: absolute;
-	top: 544px;
+	top: 545px;
 	right: 30px;
 	color: #272D31;
 	font-size: 0.9em;
 	padding-top: 4px;
+	font-weight: bold;
 	/*margin: 0 0 0 150px;*/
 }
 
