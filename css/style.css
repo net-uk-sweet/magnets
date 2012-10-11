@@ -458,11 +458,11 @@ li { cursor: move;}
 
 #logo {
 	position: absolute;
-	top: 548px;
+	top: 547px;
 	left: 32px;
 	color: #272D31;
 	font-family: "Courier New", monospace;
-	font-size: 1.15em;
+	font-size: 1.25em;
 	text-decoration: none;
 	font-weight: bold;
 }
@@ -474,7 +474,7 @@ li { cursor: move;}
 	color: #272D31;
 	font-size: 0.9em;
 	padding-top: 4px;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	/*margin: 0 0 0 150px;*/
 }
 
