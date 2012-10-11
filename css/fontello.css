@@ -39,5 +39,5 @@
 /*.icon-ccw:before { content: '\27f2'; }*/ /* '⟲' */
 .icon-cw:before { content: '\27f3'; /*font-size: 13px; margin-left: 2px; margin-top: 8px; */} /* '⟳' */
 .icon-trash:before { content: '\e729'; } /* '' */
-.icon-users:after { content: '👥'; font-size: 16px; width: 16px; } /* '\1f465' */
+.icon-users:after { content: '👥'; font-size: 18px; width: 18px; } /* '\1f465' */
 .icon-none:before { content: ''; } /* '⚫' */

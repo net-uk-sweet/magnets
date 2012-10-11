@@ -3,6 +3,7 @@
 	
 	TODO: sound on drop
 	TODO: prompt when only user
+	TODO: click to remove selected
 */
 
 (function( magnets, $, undefined ) {
