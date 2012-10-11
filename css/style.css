@@ -371,16 +371,18 @@ li { cursor: move;}
 .ui-icon {
 	width: 25px;
 	height: 25px;
-
 }
 .ui-button-icon-only { width: 25px !important; }
 .ui-button-icon-only .ui-icon {
 	/*top: 3px !important; 
 	left: 5px !important;*/
-	/*border: 1px solid;*/
+	position: relative;
+	top: -2px;
+	left: -2px;
+	/*border: 1px solid green;*/
 	text-shadow: 1px 1px 0 #939BA1;
-	margin-left: -15px;
-	margin-top: -15px;
+	padding: 0 !important;
+	margin: 0 !important;
 }
 .ui-corner-all {
 	-webkit-border-radius: 2px;
@@ -440,6 +442,13 @@ li { cursor: move;}
 }
 
 #prev { margin-right: 40px; }
+
+/* sorry, firefox specific absolute fixes */
+@-moz-document url-prefix() {
+    #prev {
+        margin-right: 39px;
+    }
+}
 
 #character-selector {
 	/*border: 1px solid black;*/

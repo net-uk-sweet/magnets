@@ -632,7 +632,8 @@
 		$("button").mouseup(function() {
 			$(this).removeClass('ui-state-focus ui-state-hover ui-state-active');
 		});
-
+		
+		render();
 		$('#preloader').preloader({
 			style: 'drag',
 			delay: 1,
