@@ -398,9 +398,9 @@ li { cursor: move;}
 	border-right: 2px solid #657078;
 	border-bottom: 2px solid #4E5961;
 	border-left: 2px solid #4E5961;
-	-webkit-box-shadow: 0 0 1px 1px #444;
-	-moz-box-shadow: 0 0 1px 1px #444;
-	box-shadow: 0 0 1px 1px #444;	
+	-webkit-box-shadow: 0 0 1px 1px #272D31;
+	-moz-box-shadow: 0 0 1px 1px #272D31;
+	box-shadow: 0 0 1px 1px #272D31;	
 }
 .ui-state-hover, .ui-state-focus { color: #000; }
 
