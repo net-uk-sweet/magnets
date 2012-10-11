@@ -177,14 +177,22 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 			
 				var $this = $(this);
 				
+				var count = 1;
+				
+				var colors = settings.shuffle 
+					? shuffle(settings.colors) 
+					: settings.colors;
+				
+				$this.css({'color': colors[0]});
+				
 				$this.data('colorCycle', {
-					count: 0, 
-					colors: settings.shuffle ? shuffle(colors) : colors,
+					count: count, 
+					colors: colors,
 					timeout: null,
 					animating: false
 				});
 				
-				if (settings.wait) { wait($this); } else { animate($this); }
+				if (settings.wait) { wait($this);  } else { animate($this); }
 			});
 		}, 
 		

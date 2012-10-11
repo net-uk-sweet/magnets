@@ -352,7 +352,7 @@ li { cursor: move;}
 #log p{margin:0;}
 
 #toolbar {
-	/*display: none;*/
+	display: none;
 	margin-top: 5px;
 	text-align: center;
 }
@@ -377,7 +377,7 @@ li { cursor: move;}
 	/*top: 3px !important; 
 	left: 5px !important;*/
 	position: relative;
-	top: -2px;
+	top: -4px;
 	left: -2px;
 	/*border: 1px solid green;*/
 	text-shadow: 1px 1px 0 #939BA1;
@@ -476,7 +476,7 @@ li { cursor: move;}
 
 #users {
 	position: absolute;
-	top: 546px;
+	top: 544px;
 	right: 30px;
 	color: #272D31;
 	font-size: 0.9em;

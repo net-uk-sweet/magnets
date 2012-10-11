@@ -24,20 +24,20 @@
 				$toolbar.fadeIn();
 				
 			// Fade toolbar in and out if mouse is over whiteboard
-			// $frame.hover(
-				// function(event) {
-					// $toolbar.data('hover', true); 
-					// $toolbar.stop().fadeTo('slow', 1); 
-				// }, 
-				// function(event) { 
-					// $toolbar.data('hover', false);
-					// clearTimeout(timer); 
-					// timer = setTimeout(function() { 
-						// if (!$toolbar.data('hover'))
-							// $toolbar.stop().fadeOut('slow', 0);
-					// }, 1500)
-				// }
-			// );
+			$frame.hover(
+				function(event) {
+					$toolbar.data('hover', true); 
+					$toolbar.stop().fadeTo('slow', 1); 
+				}, 
+				function(event) { 
+					$toolbar.data('hover', false);
+					clearTimeout(timer); 
+					timer = setTimeout(function() { 
+						if (!$toolbar.data('hover'))
+							$toolbar.stop().fadeOut('slow', 0);
+					}, 1500)
+				}
+			);
 
 			// set up buttons with auto class to autofire
 			$('button.auto').autofire({});
@@ -183,18 +183,13 @@
 					.attr('id', drop.added)
 			);
 				
-			$('#character-selector span').css('color', '#cccccc')
+			$('#character-selector span')
+				.colorCycle({
+					'shuffle': true, 
+					'wait': true,
+					'delay': 2
+				})	
 				.draggable({ tolerance: 'touch' })
-				.one('mousedown', function() {
-					var $this = $(this);
-					if ($this.attr('id') === drop.added) {
-						$(this).colorCycle({
-							'shuffle': true, 
-							'wait': false,
-							'delay': 2
-						});	
-					}	
-				})
 				.click(function() {
 					var $this = $(this);
 					if ($this.attr('id') === drop.added) {
@@ -633,7 +628,6 @@
 			$(this).removeClass('ui-state-focus ui-state-hover ui-state-active');
 		});
 		
-		render();
 		$('#preloader').preloader({
 			style: 'drag',
 			delay: 1,
