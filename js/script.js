@@ -118,11 +118,22 @@
 			for (var color in colors)
 				enableButton(color, enable);
 		}, 
+		
+		getColor: function() {
+			var colors = palette.config.colors;
+		    var color;
+		    var count = 0;
+		    for (var prop in colors)
+		        if (Math.random() < 1/++count)
+		           color = colors[prop];
+		    return color;			
+		}
 	};
 	
 	var menu = {
 	
 		index: 0,
+		color: null,
 		config: {
 			chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 
 				'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
@@ -172,6 +183,8 @@
 
 			var chars = menu.config.chars;
 			
+			menu.color = palette.getColor();
+			
 			if (menu.index > chars.length - 1)
 				menu.index = 0;
 				
@@ -185,19 +198,8 @@
 			);
 				
 			$('#character-selector span')
-				.colorCycle({
-					'shuffle': true, 
-					'wait': true,
-					'delay': 4
-				})	
-				.draggable({ tolerance: 'touch' })
-				.click(function() {
-					var $this = $(this);
-					if ($this.attr('id') === drop.added) {
-						$this.css('color', '#cccccc')
-							.colorCycle('destroy');	
-					}
-				});
+				.css({'color': menu.color})
+				.draggable({ tolerance: 'touch' });
 		}
 	};
 	
@@ -261,12 +263,14 @@
 						y = event.originalEvent.pageY - offset.top - ($drag.height() / 2); 
 						
 						$this.append($drag);
-						$drag.colorCycle('destroy').removeClass('unselected');
-											
+						$drag.removeClass('unselected');
+						
+						var color = $drag.css('color');
+				
 						item = {
 							id: $id,
 							v: $drag.contents().clone()[0].data,
-							c: $drag.data('colorCycle').color,
+							c: menu.color,
 							x: x,
 							y: y,
 							r: drop.getRotation()

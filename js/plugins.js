@@ -120,6 +120,7 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 
 // Simple plug-in to cycle through a list of colors and set them on an element
 // Full-featured plug-in here: https://github.com/infusion/jQuery-xcolor
+/*
 (function( $ ){
 
 	var methods = {
@@ -228,7 +229,7 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 	};
 
 })( jQuery );
-
+*/
 // Button autofire plugin
 (function( $ ){
 
