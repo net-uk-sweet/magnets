@@ -1,3 +1,5 @@
+/* globals jQuery, magnets, io */
+
 /* Author:
 	Ian Watson
 	
@@ -6,37 +8,41 @@
 	TODO: click to remove selected
 */
 
-(function( magnets, $, undefined ) {
+(function(magnets, $, undefined) {
 	
+	'use strict';
+
 	var toolbar = {
 		config: {
 			
 		},
 		
 		init: function(config) {
-			$.extend(palette.config, config);		
+			$.extend(palette.config, config);
 		
 			var $toolbar = $('#toolbar');
 			var $frame = $('#frame');
-			var timer; 
+			var timer;
 			
 			// Check if mouse is already over frame	
-			if ($frame.data('hover'))
+			if ($frame.data('hover')) {
 				$toolbar.fadeIn();
+			}
 				
 			// Fade toolbar in and out if mouse is over whiteboard
 			$frame.hover(
-				function(event) {
-					$toolbar.data('hover', true); 
-					$toolbar.stop().fadeTo('slow', 1); 
-				}, 
-				function(event) { 
+				function(/*event*/) {
+					$toolbar.data('hover', true);
+					$toolbar.stop().fadeTo('slow', 1);
+				},
+				function(/*event*/) {
 					$toolbar.data('hover', false);
-					clearTimeout(timer); 
-					timer = setTimeout(function() { 
-						if (!$toolbar.data('hover'))
+					clearTimeout(timer);
+					timer = setTimeout(function() {
+						if (!$toolbar.data('hover')) {
 							$toolbar.stop().fadeOut('slow', 0);
-					}, 1500)
+						}
+					}, 1500);
 				}
 			);
 
@@ -47,7 +53,7 @@
 				icons: { primary: 'icon-trash' },
 				text: false
 			})
-			.click(function(event) {
+			.click(function(/*event*/) {
 				drop.remove(drop.selected);
 				socket.send('remove', drop.selected);
 			});
@@ -56,12 +62,12 @@
 				icons: { primary: 'icon-cw' },
 				text: false
 			})
-			.click(function (event) {
+			.click(function(/*event*/) {
 				drop.rotate(drop.config.rotation);
-			});	
+			});
 			
 			toolbar.setEnabled(false);
-		}, 
+		},
 		
 		setEnabled: function(enable) {
 			
@@ -70,34 +76,35 @@
 			
 			palette.setEnabled(enable);
 		}
-	}
+	};
 	
 	var palette = {
 		
 		config: {
+			_class: 'color',
 			colors: {
 				'red': '#ff0000',
 				'green': '#00ff00',
 				'yellow': '#ffff00',
 				'blue': '#0000ff'
-			}			
+			}
 		},
 		
 		init: function(config) {
 			$.extend(palette.config, config);
+
 			var colors = palette.config.colors;
-			for (var color in colors) {
-				$('#' + color).click(function(event) {
-					var id = this.id
-					drop.setColor(colors[id]);
-					palette.setEnabled(true);
-					enableButton(id, false);
-				})
-				.button({
-					icons: { primary: 'icon-record' },
-					text: false
-				});
-			}
+			var _class = palette.config._class;
+
+			$('.' + _class).button({
+				icons: { primary: 'icon-record' },
+				text: false
+			}).click(function(/*event*/) {
+				var id = this.id;
+				drop.setColor(colors[id]);
+				palette.setEnabled(true);
+				enableButton(id, false);
+			});
 		},
 		
 		enableSwatch: function(hex, enable) {
@@ -106,7 +113,7 @@
 
 			for (var color in colors) {
 				if (colors[color] === hex) {
-					enableButton(color, enable)
+					enableButton(color, enable);
 				}
 			}
 		},
@@ -115,18 +122,21 @@
 			
 			var colors = palette.config.colors;
 
-			for (var color in colors)
+			for (var color in colors) {
 				enableButton(color, enable);
-		}, 
+			}
+		},
 		
 		getColor: function() {
 			var colors = palette.config.colors;
 		    var color;
 		    var count = 0;
-		    for (var prop in colors)
-		        if (Math.random() < 1/++count)
-		           color = colors[prop];
-		    return color;			
+			for (var prop in colors) {
+				if (Math.random() < 1/++count) {
+					color = colors[prop];
+				}
+			}
+		    return color;
 		}
 	};
 	
@@ -135,25 +145,25 @@
 		index: 0,
 		color: null,
 		config: {
-			chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 
+			chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
 				'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
 				'x', 'y', 'z'
-			],		
+			],
 			
 			next: '#next',
-			prev: '#prev'	
+			prev: '#prev'
 		},
 		
 		init: function(config) {
-			$.extend(menu.config, config);
-			var config = menu.config;
 			
+			config = $.extend(menu.config, config);
+
 			$(config.prev).button({
-				icons: { primary: 'icon-left-dir' }, 
+				icons: { primary: 'icon-left-dir' },
 				text: false
 			})
 			.button('enable')
-			.bind('click.autofire', function (event) {
+			.bind('click.autofire', function (/*event*/) {
 				menu.prev();
 			});
 			
@@ -162,9 +172,9 @@
 				text: false
 			})
 			.button('enable')
-			.bind('click.autofire', function (event) {
+			.bind('click.autofire', function (/*event*/) {
 				menu.next();
-			});		
+			});
 				
 			menu.update();
 		},
@@ -185,11 +195,13 @@
 			
 			menu.color = palette.getColor();
 			
-			if (menu.index > chars.length - 1)
+			if (menu.index > chars.length - 1) {
 				menu.index = 0;
+			}
 				
-			if (menu.index < 0)
+			if (menu.index < 0) {
 				menu.index = chars.length - 1;
+			}
 
 			$('#character-selector').html(
 				$('<span>' + chars[menu.index] + '<\/span>')
@@ -220,13 +232,12 @@
 			drop.items = data;
 			
 			if (data) {
-				var html = '';
-				$.each(data, function() {			
+				$.each(data, function() {
 					drop.addItem(this);
 				});
 			} else {
 				drop.items = [];
-			}	
+			}
 			
 			drop.initTarget();
 			drop.initOut();
@@ -248,7 +259,7 @@
 				drop: function(event, ui) {
 					
 					//console.log('in');
-					$this = $(this);	
+					$this = $(this);
 					$drag = ui.draggable;
 					$id = $drag.attr('id');
 					
@@ -259,14 +270,12 @@
 						var offset = $this.offset();
 	
 						// It's a new magnet
-						x = event.originalEvent.pageX - offset.left - ($drag.width() / 2); 
-						y = event.originalEvent.pageY - offset.top - ($drag.height() / 2); 
+						x = event.originalEvent.pageX - offset.left - ($drag.width() / 2);
+						y = event.originalEvent.pageY - offset.top - ($drag.height() / 2);
 						
 						$this.append($drag);
 						$drag.removeClass('unselected');
-						
-						var color = $drag.css('color');
-				
+	
 						item = {
 							id: $id,
 							v: $drag.contents().clone()[0].data,
@@ -276,7 +285,7 @@
 							r: drop.getRotation()
 						};
 						
-						$drag.attr('id', item.id);						
+						$drag.attr('id', item.id);
 						menu.update();
 	
 						drop.setProps($drag, item);
@@ -309,8 +318,8 @@
 		},
 		
 		addItem: function(item) {
+
 			var $target = $(drop.config.target);
-			var $drag;
 					
 			if (!drop.getItem(item.id)) {
 				drop.items.push(item);
@@ -320,13 +329,13 @@
 				$('<span>' + item.v + '<\/span>')
 					.addClass('drag')
 					.attr('id', item.id)
-			);	
+			);
 				
 			drop.setProps($('#' + item.id), item);
 		},
 	
 		update: function(data) {
-			$('#' + data.id) 
+			$('#' + data.id)
 				.css('color', data.c)
 				.css('left', data.x)
 				.css('top', data.y)
@@ -353,7 +362,7 @@
 		},
 		
 		setColor: function(color) {
-			$('#' + drop.selected).css('color', color);				
+			$('#' + drop.selected).css('color', color);
 			var item = drop.getItem(drop.selected);
 			item.c = color;
 			socket.send('update', item);
@@ -412,7 +421,7 @@
 				}
 					
 				i ++;
-			}	
+			}
 		},
 		
 		setProps: function($drag, item) {
@@ -431,7 +440,7 @@
 					containment: drop.config.target,
 					distance: drop.config.lag,
 					scroll: false
-				});		
+				});
 		},
 		
 		getClick: function() {
@@ -447,8 +456,8 @@
 			while (i < l) {
 				item = items[i];
 				if (item.id === id) {
-					return item;	
-				}		
+					return item;
+				}
 				i ++;
 			}
 			return false;
@@ -462,7 +471,7 @@
 	
 		    for (var color in colors) {
 		        if (Math.random() < 1/++c) {
-		           ret = colors[color];
+					ret = colors[color];
 		        }
 		    }
 		    
@@ -472,18 +481,18 @@
 		getRotation: function() {
 			return 330 + (Math.floor(Math.random() * 5) * drop.config.rotation);
 		}
-	}
+	};
 	
 	var socket = {
 		
-		connection: '',	
+		connection: '',
 		disabled: false,
 		config: {
 			logger: '#log',
 			users: '#users'
 		},
 		
-		connect: function(config) {	
+		connect: function(config) {
 			
 			// Allows us to override built in config object
 			$.extend(socket.config, config);
@@ -507,7 +516,7 @@
 						'xhr-multipart',
 						'xhr-polling',
 						'jsonp-polling'
-					] 
+					]
 				});
 				
 				//socket.connection = io.connect();
@@ -534,7 +543,7 @@
 				});
 				
 				socket.connection.on('reconnect_failed', function() {
-					socket.log('event', 'Socket status: reconnect failed');	
+					socket.log('event', 'Socket status: reconnect failed');
 				});
 				
 				socket.connection.on('message', function(msg) {
@@ -542,8 +551,8 @@
 					var type = msg.type;
 					var body = msg.body;
 
-					socket.log('message', 'Received message: ' + type 
-						+ ' : body : ' + JSON.stringify(body));
+					socket.log('message', 'Received message: ' + type +
+						' : body : ' + JSON.stringify(body));
 					
 					var handler = {
 						'push': function() {
@@ -559,7 +568,7 @@
 						},
 						'update': function() {
 							drop.update(body);
-						}, 
+						},
 						'remove': function() {
 							drop.remove(body);
 						},
@@ -575,16 +584,16 @@
 							history.start(body);
 						},
 						'clear': function() {
-							drop.clear();	
-						},	
+							drop.clear();
+						},
 						'count': function() {
 							socket.setCount(body);
-						}					
+						}
 					};
 					
 					handler[msg.type]();
-				});								
-			} 
+				});
+			}
 			catch(exception) {
 				socket.log('warning', 'Error' + exception);
 			}
@@ -594,49 +603,51 @@
 			try {
 				var json = JSON.stringify({type: type, body: body});
 				socket.connection.send(json);
-				socket.log('event', 'Sent message: ' + type + ' : body : ' 
-					+ JSON.stringify(body));
+				socket.log('event', 'Sent message: ' + type +
+					' : body : ' + JSON.stringify(body));
 			} catch(exception) {
 				socket.log('warning', 'Could not send message');
-			}		
-		},	
+			}
+		},
 	
 		close: function() {
-			socket.connection.disconnect();	
+			socket.connection.disconnect();
 		},
 		
 		log: function(type, msg) {
 			var $logger = $(socket.config.logger);
 			msg = '<p class="' + type + '">' + msg + '<\/p>';
 	
-			($logger.html() == '') 
-				? $logger.html(msg) 
-				: $logger.prepend(msg);
+			if ($logger.html() === '') {
+				$logger.html(msg);
+			} else {
+				$logger.prepend(msg);
+			}
 		},
 		
 		setCount: function(count) {
-			$(socket.config.users).html("(" + count.toString() + ") ");			
+			$(socket.config.users).html('(' + count.toString() + ')');
 		}
 	};
 	
-	magnets.init = function() {	
+	magnets.init = function() {
 
 		// Keep a record of whether mouse is over so we 
 		// can show the toolbar if necessary when app has loaded
 		$('#frame').hover(
-			function(event) { $(this).data('hover', true); }, 
-			function(event) { $(this).data('hover', false); }
+			function(/*event*/) { $(this).data('hover', true); },
+			function(/*event*/) { $(this).data('hover', false); }
 		);
 		
 		// hack to kill focus state which appears to be impossible to override in CSS
-		$("button").mouseup(function() {
+		$('button').mouseup(function() {
 			$(this).removeClass('ui-state-focus ui-state-hover ui-state-active');
 		});
 		
 		$('#preloader').preloader({
 			style: 'drag',
 			delay: 1,
-			rotation: drop.config.rotation, 
+			rotation: drop.config.rotation,
 			wait: true
 		}).one('complete', function() {
 			$(this).hide('slow', function() {
@@ -644,13 +655,13 @@
 			});
 		});
 			
-		socket.connect();	
+		socket.connect();
 	};
 	
 	function enableButton(id, enable) {
 		var method = enable ? 'enable' : 'disable';
 		$('#' + id).button(method);
-	};
+	}
 	
 	function render() {
 		
@@ -659,21 +670,21 @@
 		palette.init();
 		toolbar.init();
 				
-		$('#drop').fadeIn();	
-	};
+		$('#drop').fadeIn();
+	}
 	
 	
 		
 	// Admin controls
 	
-	$('#disconnect').click(function(event) {
+	$('#disconnect').click(function(/*event*/) {
 		socket.close();
 	});
 	
-	$('#reset').click(function(event) {
+	$('#reset').click(function(/*event*/) {
 		socket.send('clear', null);
 	});
-	$('#clear').click(function(event) {
+	$('#clear').click(function(/*event*/) {
 		$('#log').empty();
 	});
 
