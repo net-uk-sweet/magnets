@@ -151,11 +151,11 @@ io.sockets.on('connection', function (socket) {
 				broadcast(socket, 'clear', true);
 			},
 			'history': function() {
-				console.log('History');
+				// console.log('History');
 			},
 			'reset': function() {
 				// Do a push here
-				console.log('Resetting');
+				// console.log('Resetting');
 			}			
 		}
 
@@ -163,7 +163,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function() {
-		console.log("Disconnected");
+		// console.log("Disconnected");
 		socket.get('selected', function(err, id) {
 			console.log("id: " + id);
 			if (id !== null) {

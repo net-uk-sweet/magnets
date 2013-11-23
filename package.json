@@ -1,18 +1,22 @@
 {
   "author": "net.uk.sweet",
-  "name": "sweet.no.de",
   "description": "Sweet magnets",
-  "version": "1.0.0",
+  "version": "1.0.0-2",
   "repository": {
     "url": ""
   },
   "engines": {
-    "node": "~0.4.11"
+    "node": "0.6.x"
   },
   "dependencies": {
     "socket.io": "0.8.5",
     "socket.io-client": "0.8.5",
     "mime": "1.2.2"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "subdomain": "net-uk-sweet",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "net-uk-sweet"
 }
