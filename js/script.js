@@ -3,6 +3,7 @@
 /* Author:
 	Ian Watson
 	
+	TODO: CSS prefixes
 	TODO: sound on drop
 	TODO: prompt when only user
 	TODO: click to remove selected
@@ -210,7 +211,7 @@
 			);
 				
 			$('#character-selector span')
-				.css({'color': menu.color})
+				.css('color', menu.color)
 				.draggable({ tolerance: 'touch' });
 		}
 	};
@@ -245,13 +246,12 @@
 		
 		initTarget: function() {
 			
-			var $target = $(drop.config.target);
-			var $this;
-			var $drag;
-			var $id;
-			var item;
-			var x;
-			var y;
+			var $target = $(drop.config.target),
+				$this,
+				$drag,
+				$id,
+				item,
+				x, y;
 			
 			$target.droppable({
 				accept: '.drag',
@@ -335,12 +335,13 @@
 		},
 	
 		update: function(data) {
-			$('#' + data.id)
-				.css('color', data.c)
-				.css('left', data.x)
-				.css('top', data.y)
-				.css('-webkit-transform', 'rotate(' + data.r + 'deg)')
-				.css('-moz-transform', 'rotate(' + data.r + 'deg)');
+			$('#' + data.id).css({
+				'color': data.c,
+				'left': data.x,
+				'top': data.y,
+				'-webkit-transform': 'rotate(' + data.r + 'deg)',
+				'-moz-transform': 'rotate(' + data.r + 'deg)'
+			});
 				
 			var item = drop.getItem(data.id);
 			item.c = data.c;
@@ -426,21 +427,23 @@
 		
 		setProps: function($drag, item) {
 	
-			$drag.css('position', 'absolute')
-				.css('color', item.c)
-				.css('left', item.x)
-				.css('top', item.y)
-				.css('-webkit-transform', 'rotate(' + item.r + 'deg)')
-				.css('-moz-transform', 'rotate(' + item.r + 'deg)')
-				.click(drop.getClick())
-				.mouseover(function() {
-					$('#board').css('overflow', 'visible');
-				})
-				.draggable({
-					containment: drop.config.target,
-					distance: drop.config.lag,
-					scroll: false
-				});
+			$drag.css({
+				'position': 'absolute',
+				'color': item.c,
+				'left': item.x,
+				'top': item.y,
+				'-webkit-transform': 'rotate(' + item.r + 'deg)',
+				'-moz-transform': 'rotate(' + item.r + 'deg)'
+			})
+			.click(drop.getClick())
+			.mouseover(function() {
+				$('#board').css('overflow', 'visible');
+			})
+			.draggable({
+				containment: drop.config.target,
+				distance: drop.config.lag,
+				scroll: false
+			});
 		},
 		
 		getClick: function() {
