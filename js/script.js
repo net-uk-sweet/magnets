@@ -21,31 +21,7 @@
 		init: function(config) {
 			$.extend(palette.config, config);
 		
-			var $toolbar = $('#toolbar');
-			var $frame = $('#frame');
-			var timer;
-			
-			// Check if mouse is already over frame	
-			if ($frame.data('hover')) {
-				$toolbar.fadeIn();
-			}
-				
-			// Fade toolbar in and out if mouse is over whiteboard
-			$frame.hover(
-				function(/*event*/) {
-					$toolbar.data('hover', true);
-					$toolbar.stop().fadeTo('slow', 1);
-				},
-				function(/*event*/) {
-					$toolbar.data('hover', false);
-					clearTimeout(timer);
-					timer = setTimeout(function() {
-						if (!$toolbar.data('hover')) {
-							$toolbar.stop().fadeOut('slow', 0);
-						}
-					}, 1500);
-				}
-			);
+			$('#toolbar').fadeIn();
 
 			// set up buttons with auto class to autofire
 			$('button.auto').autofire({});
