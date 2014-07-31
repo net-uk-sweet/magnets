@@ -3,10 +3,10 @@
 /* Author:
 	Ian Watson
 	
-	TODO: CSS prefixes
-	TODO: sound on drop
-	TODO: prompt when only user
-	TODO: click to remove selected
+	[ ] CSS prefixes
+	[ ] sound on drop
+	[ ] prompt when only user
+	[ ] click to remove selected
 */
 
 (function(magnets, $, undefined) {
