@@ -1,22 +1,28 @@
 {
+  "name": "magnets",
+  "version": "1.0.0",
   "author": "net.uk.sweet",
-  "description": "Sweet magnets",
-  "version": "1.0.0-12",
+  "description": "A multi-player fridge magnets game",
+  "main": "server.js",
+  "scripts": {
+    "test": "node index.js"
+  },
   "repository": {
-    "url": ""
+    "type": "git",
+    "url": "https://github.com/net-uk-sweet/magnets.git"
+  },
+  "bugs": {
+    "url": "https://github.com/net-uk-sweet/magnets/issues"
   },
   "engines": {
     "node": "0.6.x"
   },
   "dependencies": {
+    "grunt-build-control": "^0.5.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.1",
+    "mime": "1.2.2",
     "socket.io": "0.8.5",
-    "socket.io-client": "0.8.5",
-    "mime": "1.2.2"
-  },
-  "devDependencies": {},
-  "subdomain": "net-uk-sweet",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "name": "net-uk-sweet"
+    "socket.io-client": "0.8.5"
+  }
 }

@@ -3,6 +3,8 @@ var http = require('http'),
 	fs = require('fs'),
 	path = require('path'),
 	mime = require('mime'),
+	port = process.env.OPENSHIFT_NODEJS_PORT || config.port,
+	ip = process.env.OPENSHIFT_NODEJS_IP || config.ip,
 	server,
 	file = 'items.json',
 	items = [];
@@ -28,7 +30,7 @@ server = http.createServer(function(request, result) {
 		}
 	});
 });
-server.listen(process.env.PORT || 8080);
+server.listen(port, ip);
 
 // Create a file to contain the game data if it doesn't exist
 if (!path.existsSync(file)) {
