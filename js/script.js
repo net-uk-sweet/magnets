@@ -1,5 +1,7 @@
 /* globals jQuery, magnets, io */
 
+/* socket.io "0.8.5" */
+
 /* Author:
 	Ian Watson
 	
@@ -9,9 +11,43 @@
 	[ ] click to remove selected
 */
 
+/*
+	Transition to angular (20 hours until no job!)
+		[x] Review the client codez
+		[x] Decide what actors I need
+		[x] Review the server codez
+		
+		[ ] Rewrite server - express, latest socket.io
+		[ ] Write a service to interact w/ it
+
+		[ ] Better approach to selected magnet stuff?
+		[ ] Custom version of jQuery UI w/ only drag and drop
+		[ ] Plus NG bindings / directives whatever
+		[ ] Find / prototype with drag and drop lib
+		[ ] How to expose an API in angular to window?
+*/
+
+/*
+	WebsocketService
+
+	MagnetsView
+	AdminView
+
+	MenuDirective
+	PaletteDirective
+	ToolbarDirective
+	DragDirective?
+	DropDirective?
+*/
+
 (function(magnets, $, undefined) {
 	
 	'use strict';
+
+	// -----------------------------------------------------------------------
+	// The toolbar 
+	// Bit strange as it represents the menu, palette and remove / rotate buttons
+	// of which the first two are separate object, and the latter is not.
 
 	var toolbar = {
 		config: {
@@ -46,6 +82,7 @@
 			toolbar.setEnabled(false);
 		},
 		
+		// Enables / disables palette and rotate / remove buttons
 		setEnabled: function(enable) {
 			
 			enableButton('rotate', enable);
@@ -55,6 +92,9 @@
 		}
 	};
 	
+	// -----------------------------------------------------------------------
+	// The color palette menu
+
 	var palette = {
 		
 		config: {
@@ -73,6 +113,7 @@
 			var colors = palette.config.colors;
 			var _class = palette.config._class;
 
+			// jQuery UI buttons aren't really needed. 
 			$('.' + _class).button({
 				icons: { primary: 'icon-record' },
 				text: false
@@ -84,6 +125,7 @@
 			});
 		},
 		
+		// Disables / enables the swatch associated w/ supplied hex value
 		enableSwatch: function(hex, enable) {
 			
 			var colors = palette.config.colors;
@@ -95,6 +137,7 @@
 			}
 		},
 		
+		// Disables / enables all the swatches in the menu
 		setEnabled: function(enable) {
 			
 			var colors = palette.config.colors;
@@ -104,10 +147,13 @@
 			}
 		},
 		
+		// Gets a random color for an item on the menu
 		getColor: function() {
 			var colors = palette.config.colors;
 		    var color;
 		    var count = 0;
+
+		    // WTF?
 			for (var prop in colors) {
 				if (Math.random() < 1/++count) {
 					color = colors[prop];
@@ -117,11 +163,26 @@
 		}
 	};
 	
+	// -----------------------------------------------------------------------
+	// The magnet selection menu
+
+	/*
+		http://stackoverflow.com/questions/16788964/how-to-loop-through-the-alphabet-via-underscorejs
+		var alphas = _.range(
+		    'a'.charCodeAt(0),
+		    'z'.charCodeAt(0)+1
+		); 
+		// [97 .. 122]
+
+		String.fromCharCode(alphas[n]);
+	*/
+
 	var menu = {
 	
 		index: 0,
 		color: null,
 		config: {
+			// Could do this better. See above
 			chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
 				'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
 				'x', 'y', 'z'
@@ -168,10 +229,14 @@
 		
 		update: function() {
 
+			// The array of characters
+			// TODO: should be able to iterate through character numbers instead
 			var chars = menu.config.chars;
 			
+			// Get a random color
 			menu.color = palette.getColor();
 			
+			// This would be better in the next / previous methods
 			if (menu.index > chars.length - 1) {
 				menu.index = 0;
 			}
@@ -192,6 +257,9 @@
 		}
 	};
 	
+	// -----------------------------------------------------------------------
+	// The drop area
+
 	var drop = {
 		
 		selected: '',
@@ -200,14 +268,15 @@
 		config: {
 			rotation: 15,
 			lag: 8, // pixel resistance on the drag
-			target: '#drop',
-			out: '#wrapper'
+			target: '#drop', // The area we can drop on
+			out: '#wrapper' // Out of bounds area
 		},
 		
 		init: function(data, config) {
 			$.extend(socket.config, config);
 			drop.items = data;
 			
+			// Populate the drop area with items received
 			if (data) {
 				$.each(data, function() {
 					drop.addItem(this);
@@ -230,8 +299,8 @@
 				x, y;
 			
 			$target.droppable({
-				accept: '.drag',
-				tolerance: 'fit',
+				accept: '.drag', // accept elements w/ this class
+				tolerance: 'fit', // drag has to be completely over target area (no intersection)
 				drop: function(event, ui) {
 					
 					//console.log('in');
@@ -239,19 +308,18 @@
 					$drag = ui.draggable;
 					$id = $drag.attr('id');
 					
-					$('#board').css('overflow', 'hidden');
-					
+					// This is a new item w/ temporary id
 					if ($id === drop.added) {
 						
 						var offset = $this.offset();
 	
-						// It's a new magnet
 						x = event.originalEvent.pageX - offset.left - ($drag.width() / 2);
 						y = event.originalEvent.pageY - offset.top - ($drag.height() / 2);
 						
 						$this.append($drag);
 						$drag.removeClass('unselected');
-	
+						
+						// Create the model for the item
 						item = {
 							id: $id,
 							v: $drag.contents().clone()[0].data,
@@ -269,8 +337,10 @@
 						
 						socket.send('add', item);
 					} else {
-						// It's been moved within the target
+						// It's an existing item which has been moved within the target
+						$drag.removeClass('selected');
 						var position = $drag.position();
+						$drag.addClass('selected');
 						item = drop.getItem($id);
 						item.x = position.left;
 						item.y = position.top;
@@ -281,6 +351,7 @@
 			});
 		},
 		
+		// Remove items dropped outside the board
 		initOut: function() {
 			
 			$(drop.config.out).droppable({
@@ -293,6 +364,7 @@
 			});
 		},
 		
+		// Add an item to the board on init or on socket message
 		addItem: function(item) {
 
 			var $target = $(drop.config.target);
@@ -309,8 +381,11 @@
 				
 			drop.setProps($('#' + item.id), item);
 		},
-	
+		
+		// Called on update of item via socket
 		update: function(data) {
+
+			// This chunk is duplicated in setProps
 			$('#' + data.id).css({
 				'color': data.c,
 				'left': data.x,
@@ -326,11 +401,13 @@
 			item.r = data.r;
 		},
 		
+		// Remove all items and reset the array
 		clear: function() {
 			$(drop.config.target).children().remove();
 			drop.items = [];
 		},
 		
+		// Update temp id of just dropped item w/ guid assigned by server
 		setID: function(id) {
 			var item = drop.getItem('added');
 			item.id = id;
@@ -338,6 +415,7 @@
 			drop.setSelected(id);
 		},
 		
+		// Set the color of an item, on change from palette 
 		setColor: function(color) {
 			$('#' + drop.selected).css('color', color);
 			var item = drop.getItem(drop.selected);
@@ -345,6 +423,7 @@
 			socket.send('update', item);
 		},
 		
+		// Change item to selected state when clicked
 		setSelected: function(id) {
 			$('#' + drop.selected).removeClass('highlight');
 			drop.selected = id;
@@ -355,6 +434,7 @@
 			socket.send('selected', id);
 		},
 		
+		// Reenable on socket message (other user had it selected, but no longer does)
 		enable: function(id, enabled) {
 			//console.log(id + ' enabled: ' + enabled);
 			var $drag = $('#' + id);
@@ -368,6 +448,9 @@
 			}
 		},
 		
+		// Wonder if some of these should be methods on the draggables?
+
+		// Rotate an item on user rotate via toolbar
 		rotate: function(rotation) {
 			var $drag = $('#' + drop.selected);
 			var item = drop.getItem(drop.selected);
@@ -381,6 +464,7 @@
 			socket.send('update', item);
 		},
 		
+		// Remove an item on user delete via toolbar
 		remove: function(id) {
 			var items = drop.items;
 			var l = items.length;
@@ -390,6 +474,7 @@
 			$('#' + id).remove();
 			toolbar.setEnabled(false);
 			
+			// Use underscore!
 			while (i < l) {
 				item = items[i];
 				if (item.id === id) {
@@ -401,6 +486,8 @@
 			}
 		},
 		
+		// Called on an item when added via this user or via socket message
+		// Sets the CSS properties AND bindings on an item. Breaks SRP!
 		setProps: function($drag, item) {
 	
 			$drag.css({
@@ -422,16 +509,19 @@
 			});
 		},
 		
+		// Helper function which returns the callback for item clicks
 		getClick: function() {
 			return function() { drop.setSelected($(this).attr('id')); };
 		},
 		
+		// Returns an item (data) for a given id
 		getItem: function(id) {
 			var items = drop.items;
 			var l = items.length;
 			var i = 0;
 			var item;
-	
+		
+			// underscore!!
 			while (i < l) {
 				item = items[i];
 				if (item.id === id) {
@@ -442,26 +532,15 @@
 			return false;
 		},
 		
-		getColor: function() {
-			
-			var colors = palette.config.colors;
-			var c = 0;
-			var ret;
-	
-		    for (var color in colors) {
-		        if (Math.random() < 1/++c) {
-					ret = colors[color];
-		        }
-		    }
-		    
-		    return ret;
-		},
-		
+		// Returns a random but upright rotation for a new item added by this user
 		getRotation: function() {
 			return 330 + (Math.floor(Math.random() * 5) * drop.config.rotation);
 		}
 	};
 	
+	// -----------------------------------------------------------------------
+	// Websockets handler
+
 	var socket = {
 		
 		connection: '',
@@ -477,7 +556,8 @@
 			$.extend(socket.config, config);
 					
 			try {
-	
+
+				// socket.io configuration
 				socket.connection = io.connect(null, {
 					'connect timeout': 5000,
 					'try multiple transports': true,
@@ -498,73 +578,86 @@
 					]
 				});
 				
-				//socket.connection = io.connect();
-				
-				// Set initial not ready message
-				socket.log('event', 'Socket status: closed');
-	
 				socket.connection.on('connect', function() {
-					//socket.log('event', 'Socket status: open');
+					// Preloader stops, calls back and toolbars and drop are initialised
 					$('#preloader').preloader('stop');
 				});
 				
 				socket.connection.on('disconnect', function() {
-					socket.log('event', 'Socket status: closed!');
+					console.log('event', 'Socket status: closed!');
+					// Clear the drop area and reset the model
 					drop.clear();
 				});
 				
 				socket.connection.on('reconnecting', function(delay, attempts) {
-					socket.log('event', 'Socket status: reconnection attempt ' + attempts);
+					console.log('event', 'Socket status: reconnection attempt ' + attempts);
 				});
 	
 				socket.connection.on('reconnect', function() {
-					socket.log('event', 'Socket status: reconnected');
+					console.log('event', 'Socket status: reconnected');
 				});
 				
 				socket.connection.on('reconnect_failed', function() {
-					socket.log('event', 'Socket status: reconnect failed');
+					console.log('event', 'Socket status: reconnect failed');
 				});
 				
+				// Callback from messages pushed from socket
 				socket.connection.on('message', function(msg) {
 					
+					// Types are outlined in handler object below
 					var type = msg.type;
 					var body = msg.body;
 
-					socket.log('message', 'Received message: ' + type +
+					console.log('message', 'Received message: ' + type +
 						' : body : ' + JSON.stringify(body));
 					
 					var handler = {
+						// The initial snapshot, maybe snapshot is a better name
+						// since all of the messages are essentially pushed?
 						'push': function() {
 							var selected = body.selected;
-							drop.init(body.items);
+							drop.init(body.items); // init the drop component w/ data
 							socket.setCount(body.count);
+							// Should drop not be handling this
 							for (var i = 0; i < selected.length; i ++) {
+								// enable all but selected items - of which there may be many
 								drop.enable(selected[i], false);
 							}
 						},
+						// Item has been added
 						'add': function() {
 							drop.addItem(body);
 						},
+						// Item on stage had been updated in some way
+						// Moved, rotated, color changed etc.
 						'update': function() {
 							drop.update(body);
 						},
+						// Item on stage has been deleted
 						'remove': function() {
 							drop.remove(body);
 						},
+						// Item on stage has been selected
 						'selected': function() {
 							drop.enable(body.unselected, true);
 							drop.enable(body.selected, false);
 						},
+						// When an item is added to the stage, server responds
+						// with a guid to replace the temporary id assigned on 
+						// the client
 						'guid': function() {
 							drop.setID(body);
 						},
+						// Half-baked feature, unused
 						'history': function() {
 							socket.disabled = true;
 							history.start(body);
 						},
+						// Clear the stage
 						'clear': function() {
 							drop.clear();
 						},
+						// Updates count when a new user logs in
 						'count': function() {
 							socket.setCount(body);
 						}
@@ -574,7 +667,7 @@
 				});
 			}
 			catch(exception) {
-				socket.log('warning', 'Error' + exception);
+				console.log('warning', 'Error receiving message', exception);
 			}
 		},
 		
@@ -582,10 +675,10 @@
 			try {
 				var json = JSON.stringify({type: type, body: body});
 				socket.connection.send(json);
-				socket.log('event', 'Sent message: ' + type +
+				console.log('event', 'Sent message: ' + type +
 					' : body : ' + JSON.stringify(body));
 			} catch(exception) {
-				socket.log('warning', 'Could not send message');
+				console.log('warning', 'Error sending message', exception);
 			}
 		},
 	
@@ -593,32 +686,17 @@
 			socket.connection.disconnect();
 		},
 		
-		log: function(type, msg) {
-			var $logger = $(socket.config.logger);
-			msg = '<p class="' + type + '">' + msg + '<\/p>';
-	
-			if ($logger.html() === '') {
-				$logger.html(msg);
-			} else {
-				$logger.prepend(msg);
-			}
-		},
-		
 		setCount: function(count) {
 			$(socket.config.users).html('(' + count.toString() + ')');
 		}
 	};
 	
+	// -----------------------------------------------------------------------
+	// This is the app object exposed to the global namespace	
+
 	magnets.init = function() {
 
-		// Keep a record of whether mouse is over so we 
-		// can show the toolbar if necessary when app has loaded
-		$('#frame').hover(
-			function(/*event*/) { $(this).data('hover', true); },
-			function(/*event*/) { $(this).data('hover', false); }
-		);
-		
-		// hack to kill focus state which appears to be impossible to override in CSS
+		// hack to kill focus state on toolbar elements which appears to be impossible to override in CSS
 		$('button').mouseup(function() {
 			$(this).removeClass('ui-state-focus ui-state-hover ui-state-active');
 		});
@@ -630,42 +708,30 @@
 			wait: true
 		}).one('complete', function() {
 			$(this).hide('slow', function() {
-				render();
+				magnets.render();
 			});
 		});
 			
 		socket.connect();
 	};
-	
-	function enableButton(id, enable) {
-		var method = enable ? 'enable' : 'disable';
-		$('#' + id).button(method);
-	}
-	
-	function render() {
-		
+
+	magnets.render = function() {
+
 		// Initialise UI
 		menu.init();
 		palette.init();
 		toolbar.init();
 				
 		$('#drop').fadeIn();
+	};
+	
+	// Why on earth is this here? It's called from all over the place, but probably
+	// doesn't naturally fit on any one object. The limitations of this approach are
+	// starting to become obvious!!
+	function enableButton(id, enable) {
+		var method = enable ? 'enable' : 'disable';
+		$('#' + id).button(method);
 	}
-	
-	
-		
-	// Admin controls
-	
-	$('#disconnect').click(function(/*event*/) {
-		socket.close();
-	});
-	
-	$('#reset').click(function(/*event*/) {
-		socket.send('clear', null);
-	});
-	$('#clear').click(function(/*event*/) {
-		$('#log').empty();
-	});
 
 }( window.magnets = window.magnets || {}, jQuery ));
 

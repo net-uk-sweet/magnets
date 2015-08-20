@@ -1,13 +1,13 @@
-var http = require('http')
-, url = require('url')
-, fs = require('fs')
-, path = require('path')
-, mime = require('mime')
-, server
-, file = 'items.json' // handy if we need to restore from a crash
-, items = [];
+var http = require('http'),
+	url = require('url'),
+	fs = require('fs'),
+	path = require('path'),
+	mime = require('mime'),
+	server,
+	file = 'items.json',
+	items = [];
 
-//
+// Set up a webserver
 server = http.createServer(function(request, result) {
 	// server code
 	var path = url.parse(request.url).pathname;
@@ -37,6 +37,7 @@ if (!path.existsSync(file)) {
 	});
 }
 
+// Configure socket.io
 var io = require('socket.io').listen(server); 
 
 io.configure('production', function() {
@@ -56,6 +57,7 @@ io.sockets.on('connection', function (socket) {
 	
 	//console.log("Connected");
 	
+	// Read the game data file
 	fs.readFile(file, 'utf8', function(err, data) {
 		
 		if (err) throw(err);		
@@ -63,12 +65,16 @@ io.sockets.on('connection', function (socket) {
 		var clients = io.sockets.clients();
 		var client;
 		var selected = [];
+		
+		var callback = function(err, id) {
+			if (id !== null) selected.push(id);
+		};
+
+		// Get the selected item ids from our client list
+		// TODO: Could this not be stored on the item data? 
 		for (var i = 0; i < clients.length; i ++) {
 			client = clients[i];
-			client.get('selected', function(err, id) {
-				if (id != null)
-					selected.push(id);
-			});	
+			client.get('selected', callback);
 		}
 		
 		//console.log('Socket: ' + socket);			
@@ -84,11 +90,14 @@ io.sockets.on('connection', function (socket) {
 		broadcast(socket, 'count', clients.length);
 	});
 
+	// Shouldn't need to route everything through message.
+	// Could bin off the type property in the data and use the
+	// event type itself - then have separate callbacks for each
 	socket.on('message', function (msg) { 
 
 		msg = JSON.parse(msg);
 
-		var type = msg.type
+		var type = msg.type;
 		var body = msg.body;
 
 		//console.log("Received message: " + msg.type);	
@@ -142,7 +151,7 @@ io.sockets.on('connection', function (socket) {
 							unselected: unselected,
 							selected: body
 						});
-					}) 
+					});
 				});
 			},
 			'clear': function() {
@@ -157,7 +166,7 @@ io.sockets.on('connection', function (socket) {
 				// Do a push here
 				// console.log('Resetting');
 			}			
-		}
+		};
 
 		handler[type]();
 	});
@@ -183,6 +192,7 @@ function send(socket, type, body) {
 	socket.emit('message', {type: type, body: body});
 }
 
+// Sends to everyone, or to everyone excluding the invokee if !all
 function broadcast(socket, type, body, all) {
 	socket.broadcast.emit('message', {type: type, body: body});
 	if (all) send(socket, type, body);

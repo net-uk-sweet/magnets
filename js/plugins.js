@@ -51,9 +51,9 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 				var data = $target.data('preloader');
 				var left = data.count * settings.spacing;
 				
-				var $magnet = $('<span class="' + settings.style + '">' 
-					+ settings.text.substring(data.count ++, data.count) 
-					+ '</span>');
+				var $magnet = $('<span class="' + settings.style + '">' + 
+					settings.text.substring(data.count ++, data.count) + 
+					'</span>');
 				
 				$magnet.css({
 					'color': getColor(),	
@@ -78,7 +78,7 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 			return this.each(function() {		
 			
 				var $this = $(this);
-			
+
 				$this.data('preloader', {
 					count: 0, 
 					delay: settings.delay,
@@ -86,7 +86,8 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 					timeout: null
 				});
 				
-				settings.wait ? wait($this) : show($this);
+				// Double this is really ugly
+				(settings.wait ? wait : show).call(this, $this);
 			});
 		}, 
 		
